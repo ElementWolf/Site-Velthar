@@ -14,7 +14,7 @@ function initializeFirebase() {
   // DIAGNÓSTICO: Verificar todas las variables de entorno
   console.log('=== DIAGNÓSTICO DE VARIABLES DE ENTORNO ===');
   console.log('NODE_ENV:', process.env.NODE_ENV);
-  console.log('FIREBASE_SERVICE_ACCOUNT_JSON definida:', !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+  console.log('FIREBASE_SERVICE_ACCOUNT definida:', !!process.env.FIREBASE_SERVICE_ACCOUNT);
   console.log('ADMIN_USERNAME definida:', !!process.env.ADMIN_USERNAME);
   console.log('JWT_SECRET definida:', !!process.env.JWT_SECRET);
   
@@ -39,16 +39,16 @@ function initializeFirebase() {
     } else {
       // Si no existe el archivo, usar variable de entorno (producción)
       console.log('Usando variable de entorno para Firebase');
-      const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+      const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
       
       if (!serviceAccountString) {
-        console.error('❌ FIREBASE_SERVICE_ACCOUNT_JSON no está definida');
+        console.error('❌ FIREBASE_SERVICE_ACCOUNT no está definida');
         console.error('Variables disponibles:', Object.keys(process.env));
-        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON no está configurada.');
+        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT no está configurada. Verifica la configuración en Vercel.');
       }
       
-      console.log('✅ FIREBASE_SERVICE_ACCOUNT_JSON encontrada');
-      console.log('Longitud de FIREBASE_SERVICE_ACCOUNT_JSON:', serviceAccountString.length);
+      console.log('✅ FIREBASE_SERVICE_ACCOUNT encontrada');
+      console.log('Longitud de FIREBASE_SERVICE_ACCOUNT:', serviceAccountString.length);
       console.log('Primeros 50 caracteres:', serviceAccountString.substring(0, 50));
       
       try {

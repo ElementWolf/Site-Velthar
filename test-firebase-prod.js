@@ -4,11 +4,11 @@ import { getFirebaseDB } from './src/app/api/firebase.js';
 
 console.log('=== PRUEBA DE CONEXIÓN A FIREBASE ===');
 console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('FIREBASE_SERVICE_ACCOUNT_JSON definida:', !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+console.log('FIREBASE_SERVICE_ACCOUNT definida:', !!process.env.FIREBASE_SERVICE_ACCOUNT);
 
-if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-  console.log('Longitud de FIREBASE_SERVICE_ACCOUNT_JSON:', process.env.FIREBASE_SERVICE_ACCOUNT_JSON.length);
-  console.log('Primeros 100 caracteres:', process.env.FIREBASE_SERVICE_ACCOUNT_JSON.substring(0, 100));
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  console.log('Longitud de FIREBASE_SERVICE_ACCOUNT:', process.env.FIREBASE_SERVICE_ACCOUNT.length);
+  console.log('Primeros 100 caracteres:', process.env.FIREBASE_SERVICE_ACCOUNT.substring(0, 100));
 }
 
 try {
