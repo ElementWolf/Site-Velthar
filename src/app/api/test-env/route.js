@@ -3,8 +3,9 @@ export async function GET() {
   
   const envVars = {
     NODE_ENV: process.env.NODE_ENV,
-    FIREBASE_SERVICE_ACCOUNT_JSON: process.env.FIREBASE_SERVICE_ACCOUNT_JSON ? 'DEFINIDA' : 'NO DEFINIDA',
+    FIREBASE_SERVICE_ACCOUNT: process.env.FIREBASE_SERVICE_ACCOUNT ? 'DEFINIDA (longitud: ' + process.env.FIREBASE_SERVICE_ACCOUNT.length + ')' : 'NO DEFINIDA',
     ADMIN_USERNAME: process.env.ADMIN_USERNAME ? 'DEFINIDA' : 'NO DEFINIDA',
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ? 'DEFINIDA' : 'NO DEFINIDA',
     JWT_SECRET: process.env.JWT_SECRET ? 'DEFINIDA' : 'NO DEFINIDA',
     VERCEL: process.env.VERCEL ? 'DEFINIDA' : 'NO DEFINIDA',
     VERCEL_ENV: process.env.VERCEL_ENV,

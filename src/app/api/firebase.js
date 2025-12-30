@@ -55,8 +55,7 @@ function initializeFirebase() {
         serviceAccount = JSON.parse(serviceAccountString);
         console.log('✅ JSON parseado exitosamente');
       } catch (parseError) {
-        console.error('❌ Error al parsear FIREBASE_SERVICE_ACCOUNT_JSON:', parseError);
-        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON no es un JSON válido.');
+        console.error('❌ Error al parsear FIREBASE_SERVICE_ACCOUNT_JSON:', parseError);        console.error('Contenido recibido (primeros 200 chars):', serviceAccountString.substring(0, 200));        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON no es un JSON válido.');
       }
       
       // MEJORADO: Procesamiento más robusto de la clave privada
