@@ -27,19 +27,9 @@ function initializeFirebase() {
   try {
     let serviceAccount;
 
-    // Intentar usar el archivo JSON local primero
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const jsonPath = join(__dirname, 'firebase-service-account.json');
-    
-    if (existsSync(jsonPath)) {
-      // Si existe el archivo JSON, usarlo (entorno local)
-      console.log('Usando archivo JSON local para Firebase');
-      const require = createRequire(import.meta.url);
-      serviceAccount = require('./firebase-service-account.json');
-    } else {
-      // Si no existe el archivo, usar variable de entorno (producción)
-      console.log('Usando variable de entorno para Firebase');
+    if (process.env.NODE_ENV === 'production') {
+      // En producción, usar SOLO variable de entorno
+      console.log('Modo producción: usando variable de entorno');
       let serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
       
       if (!serviceAccountString) {
@@ -48,23 +38,26 @@ function initializeFirebase() {
       }
       
       if (!serviceAccountString) {
-        console.error('❌ Variable de Firebase no encontrada o vacía');
-        console.error('FIREBASE_SERVICE_ACCOUNT_JSON type:', typeof process.env.FIREBASE_SERVICE_ACCOUNT_JSON, 'value length:', process.env.FIREBASE_SERVICE_ACCOUNT_JSON?.length || 'N/A');
-        console.error('FIREBASE_SERVICE_ACCOUNT type:', typeof process.env.FIREBASE_SERVICE_ACCOUNT, 'value length:', process.env.FIREBASE_SERVICE_ACCOUNT?.length || 'N/A');
-        console.error('Variables disponibles:', Object.keys(process.env));
-        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON o FIREBASE_SERVICE_ACCOUNT no está configurada o está vacía.');
+        console.error('❌ Ninguna variable de Firebase encontrada en producción');
+        throw new Error('Variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON o FIREBASE_SERVICE_ACCOUNT no configurada en Vercel.');
       }
       
-      console.log('✅ Variable de Firebase encontrada');
-      console.log('Longitud:', serviceAccountString.length);
-      console.log('Primeros 50 caracteres:', serviceAccountString.substring(0, 50));
+      console.log('✅ Variable de Firebase encontrada en producción');
+      serviceAccount = JSON.parse(serviceAccountString);
+    } else {
+      // En desarrollo, usar archivo local
+      console.log('Modo desarrollo: usando archivo JSON local');
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = dirname(__filename);
+      const jsonPath = join(__dirname, 'firebase-service-account.json');
       
-      try {
-        serviceAccount = JSON.parse(serviceAccountString);
-        console.log('✅ JSON parseado exitosamente');
-      } catch (parseError) {
-        console.error('❌ Error al parsear FIREBASE_SERVICE_ACCOUNT_JSON:', parseError);        console.error('Contenido recibido (primeros 200 chars):', serviceAccountString.substring(0, 200));        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON no es un JSON válido.');
+      if (!existsSync(jsonPath)) {
+        throw new Error('Archivo firebase-service-account.json no encontrado en desarrollo.');
       }
+      
+      const require = createRequire(import.meta.url);
+      serviceAccount = require('./firebase-service-account.json');
+    }
       
       // MEJORADO: Procesamiento más robusto de la clave privada
       if (serviceAccount.private_key) {
