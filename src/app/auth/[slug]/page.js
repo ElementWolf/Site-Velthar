@@ -64,7 +64,7 @@ const DynamicAuth = ({ params }) => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 pt-20">
             <div className="w-full max-w-lg bg-gray-900 p-8 rounded-lg shadow-lg border border-red-600 flex flex-col gap-2">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-red-500 mb-2">
