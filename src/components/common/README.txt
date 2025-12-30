@@ -1,0 +1,1 @@
+Componentes reutilizables y paneles transversales para todo el sistema (ej: LoadingSpinner, Badge, AdminExtraTools, etc). 

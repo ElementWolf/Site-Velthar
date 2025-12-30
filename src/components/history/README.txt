@@ -1,0 +1,1 @@
+Paneles y componentes para mostrar el historial de transacciones (admin y estudiante). 

@@ -1,0 +1,1 @@
+Paneles y componentes relacionados con la funcionalidad de subastas (admin y estudiante). 
