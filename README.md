@@ -1,11 +1,10 @@
-# MerlynBills
+# Site Velthar SCP
 
-Sistema de gestión de MerlynBills para estudiantes y administración, desarrollado en Next.js y totalmente migrado a Firebase Firestore.
+Wiki fan de SCP para el servidor de roleplay Velthar, desarrollado en Next.js y Firebase Firestore.
 
 ## 🚀 Descripción
 
-MerlynBills es una plataforma para la gestión de puntos, canjes, historial de transacciones y administración de estudiantes, diseñada para instituciones educativas.  
-Permite a los administradores asignar puntos, gestionar canjes, ver estadísticas y auditar movimientos, mientras que los estudiantes pueden consultar su saldo, historial y realizar solicitudes de canje.
+Esta es una plataforma wiki dedicada al universo SCP, específicamente para el servidor de roleplay Velthar. Incluye gestión de usuarios, autenticación, paneles de administración y estudiante, con integración completa a Firebase.
 
 ---
 
@@ -13,8 +12,7 @@ Permite a los administradores asignar puntos, gestionar canjes, ver estadística
 
 - **Node.js** v18 o superior (recomendado)
 - **Cuenta de Firebase** con un proyecto y Firestore habilitado
-- Archivo de credenciales: `src/app/api/firebase-service-account.json`
-- Variables de entorno en `.env.local` (ver abajo)
+- Variables de entorno configuradas (ver abajo)
 
 ---
 
@@ -22,8 +20,8 @@ Permite a los administradores asignar puntos, gestionar canjes, ver estadística
 
 1. **Clona el repositorio:**
    ```sh
-   git clone https://github.com/ElementWolf/merlynbills.git
-   cd merlynbills
+   git clone https://github.com/ElementWolf/Site-Velthar.git
+   cd Site-Velthar
    ```
 
 2. **Instala las dependencias:**
@@ -34,13 +32,10 @@ Permite a los administradores asignar puntos, gestionar canjes, ver estadística
 3. **Configura las variables de entorno:**
    Crea un archivo `.env.local` en la raíz con el siguiente contenido:
    ```
-   ADMIN_USERNAME=admin
+   ADMIN_USERNAME=tu_admin_username
    JWT_SECRET=tu_clave_secreta_segura
+   FIREBASE_SERVICE_ACCOUNT_JSON={"type":"service_account",...}  # Contenido completo del JSON de Firebase
    ```
-
-4. **Agrega el archivo de credenciales de Firebase:**
-   - Descarga el archivo JSON de tu proyecto Firebase (cuenta de servicio).
-   - Colócalo en `src/app/api/firebase-service-account.json`.
 
 ---
 
@@ -51,30 +46,34 @@ Permite a los administradores asignar puntos, gestionar canjes, ver estadística
   npm run dev
   ```
 
-- **Limpiar historial de transacciones:**
+- **Construir para producción:**
   ```sh
-  node limpiarHistorial.js
+  npm run build
   ```
 
-- **Limpiar y normalizar usuarios:**
-  ```sh
-  node limpiarUsuarios.js
-  ```
-
-- **Restablecer toda la base de datos (solo admin, todo lo demás vacío):**
-  ```sh
-  node resetDatabase.js
-  ```
+- **Desplegar en Vercel:**
+  Importa el repo en Vercel y configura las variables de entorno.
 
 ---
 
-## 📝 Notas importantes
+## 📁 Estructura del proyecto
 
-- **Migración completa a Firebase:**  
-  El sistema ya no usa Json Silo ni archivos locales, solo Firestore.
-- **El admin nunca aparece como estudiante ni en el historial.**
-- **Scripts de limpieza:**  
-  Úsalos si necesitas reiniciar el sistema o eliminar datos corruptos.
+- `src/app/` - Páginas y APIs de Next.js
+- `src/components/` - Componentes React
+- `src/lib/` - Utilidades y lógica de negocio
+- `src/contexts/` - Contextos de React
+
+---
+
+## 🤝 Contribuciones
+
+¡Bienvenido! Abre issues o pull requests para mejoras.
+
+---
+
+## 📄 Licencia
+
+Este proyecto es de código abierto. Consulta la licencia para más detalles.
 
 ---
 
@@ -98,3 +97,6 @@ Permite a los administradores asignar puntos, gestionar canjes, ver estadística
 Haz un fork, crea una rama y envía tu pull request.
 "<!-- Trigger deployment after Vercel restoration -->
 <!-- Force deployment - Fix student deletion function ready -->" 
+=======
+# Site-Velthar
+>>>>>>> 47a23088e4aeb08b05b2b1a2ca3b86e31e2a93bc
