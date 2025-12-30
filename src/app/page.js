@@ -71,7 +71,7 @@ export default function Home() {
               <h2 className="text-2xl lg:text-3xl font-black text-black mb-5 uppercase tracking-tight">
                 Comenzar
               </h2>
-              <p className="text-gray-800 leading-relaxed text-base">
+              <p className="text-gray-800 leading-relaxed text-base text-center">
                 Revisa nuestra{' '}
                 <a href="#guide" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
                   Guía para Nuevos
@@ -89,7 +89,7 @@ export default function Home() {
               <h2 className="text-2xl lg:text-3xl font-black text-black mb-5 uppercase tracking-tight">
                 Únete a la Wiki
               </h2>
-              <p className="text-gray-800 leading-relaxed text-base">
+              <p className="text-gray-800 leading-relaxed text-base text-center">
                 Lee las{' '}
                 <a href="#rules" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
                   Reglas del Sitio
