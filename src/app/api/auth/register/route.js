@@ -9,14 +9,14 @@ export async function POST(req) {
         const { id, firstName, lastName, password } = data;
         if (!id || !firstName || !lastName || !password) {
             return NextResponse.json(
-                { success: false, message: "Todos los campos son obligatorios." },
+                { success: false, message: "Todos los campos de identificación son obligatorios para el protocolo de contención." },
                 { status: 400 }
             );
         }
 
         if (!/^\d+$/.test(id.toString())) {
             return NextResponse.json(
-                { success: false, message: "El ID debe contener solo números." },
+                { success: false, message: "ID debe contener solo números para el sistema de clasificación." },
                 { status: 400 }
             );
         }
@@ -25,7 +25,7 @@ export async function POST(req) {
 
         if (!nameRegex.test(firstName.trim()) || !nameRegex.test(lastName.trim())) {
             return NextResponse.json(
-                { success: false, message: "El nombre y apellido deben contener solo letras y espacios." },
+                { success: false, message: "Nombre y apellido deben contener solo caracteres alfanuméricos autorizados." },
                 { status: 400 }
             );
         }
@@ -35,7 +35,7 @@ export async function POST(req) {
 
         if (existingUser) {
             return NextResponse.json(
-                { success: false, message: "El usuario ya existe." },
+                { success: false, message: "Identidad ya registrada en la base de datos de la Fundación." },
                 { status: 409 }
             );
         }
@@ -50,13 +50,13 @@ export async function POST(req) {
 
         if (!success) {
             return NextResponse.json(
-                { success: false, message: "Ya existe una solicitud pendiente para este usuario." },
+                { success: false, message: "Ya existe una solicitud de acceso pendiente para esta identidad." },
                 { status: 409 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "Solicitud de registro enviada. Será revisada por un administrador." },
+            { success: true, message: "Solicitud de acceso enviada. Será evaluada por el Consejo de Seguridad." },
             { status: 201 }
         );
     } catch (error) {
@@ -79,7 +79,7 @@ export async function POST(req) {
         
         // Error genérico
         return NextResponse.json(
-            { success: false, message: "Error interno del servidor. Inténtalo de nuevo más tarde." },
+            { success: false, message: "Error interno del sistema de contención. Protocolo de seguridad activado." },
             { status: 500 }
         );
     }

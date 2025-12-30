@@ -17,7 +17,7 @@ export async function POST(req) {
 
         if (!id || !password) {
             return NextResponse.json(
-                { success: false, message: "ID y contraseña obligatorios." },
+                { success: false, message: "Credenciales de seguridad insuficientes. Acceso denegado." },
                 { status: 400 }
             );
         }
@@ -28,7 +28,7 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     success: true, 
-                    message: "Inicio de sesión exitoso.", 
+                    message: "Acceso autorizado. Bienvenido al sistema de la Fundación.", 
                     token: token,
                     user: {
                         id: process.env.ADMIN_USERNAME,
@@ -48,7 +48,7 @@ export async function POST(req) {
         if (!user || password !== user?.password) {
             console.log('[LOGIN] Usuario no encontrado o contraseña incorrecta');
             return NextResponse.json(
-                { success: false, message: "Usuario no encontrado o contraseña incorrecta." },
+                { success: false, message: "Credenciales no reconocidas en la base de datos de la Fundación. Acceso denegado." },
                 { status: 404 }
             );
         }
@@ -57,7 +57,7 @@ export async function POST(req) {
         if (user.status !== 'Activo') {
             console.log('[LOGIN] Usuario no está aprobado:', user.status);
             return NextResponse.json(
-                { success: false, message: "Tu cuenta está pendiente de aprobación. Contacta al administrador." },
+                { success: false, message: "Cuenta pendiente de aprobación por el Consejo de Seguridad. Contacta al administrador de nivel 4." },
                 { status: 403 }
             );
         }
@@ -82,7 +82,7 @@ export async function POST(req) {
     } catch (error) {
         console.error("POST /api/auth/login error:", error);
         return NextResponse.json(
-            { success: false, message: "Error interno del servidor o base de datos no disponible." },
+            { success: false, message: "Error interno del sistema de contención. Protocolo de seguridad activado." },
             { status: 500 }
         );
     }
