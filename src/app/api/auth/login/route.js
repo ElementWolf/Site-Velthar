@@ -10,10 +10,17 @@ function isAdmin(user, password) {
 }
 
 export async function POST(req) {
+    console.log('[LOGIN] === INICIO DE LOGIN ===');
+    console.log('[LOGIN] Timestamp:', new Date().toISOString());
+    console.log('[LOGIN] Variables de entorno check:');
+    console.log('[LOGIN] JWT_SECRET presente:', !!process.env.JWT_SECRET);
+    console.log('[LOGIN] ADMIN_USERNAME presente:', !!process.env.ADMIN_USERNAME);
+    console.log('[LOGIN] ADMIN_PASSWORD presente:', !!process.env.ADMIN_PASSWORD);
+    
     try {
         const data = await req.json();
         const { id, password } = data;
-        console.log('[LOGIN] Intentando login con:', id, password);
+        console.log('[LOGIN] Intentando login con:', id, password ? '[PASSWORD PRESENTE]' : '[PASSWORD VACIO]');
 
         if (!id || !password) {
             return NextResponse.json(
@@ -22,8 +29,14 @@ export async function POST(req) {
             );
         }
 
-        if (isAdmin(id, password)) {
-            console.log('[LOGIN] Login admin exitoso');
+        console.log('[LOGIN] Login admin exitoso');
+        if (!process.env.JWT_SECRET) {
+            console.error('[LOGIN] JWT_SECRET no configurado para admin login');
+            return NextResponse.json(
+                { success: false, message: "Configuración de seguridad incompleta." },
+                { status: 500 }
+            );
+        }
             const token = jwt.sign({ userId: process.env.ADMIN_USERNAME }, process.env.JWT_SECRET, { expiresIn: "1h" });
             return NextResponse.json(
                 {
@@ -63,6 +76,13 @@ export async function POST(req) {
         }
 
         console.log('[LOGIN] Login exitoso para usuario:', user);
+        if (!process.env.JWT_SECRET) {
+            console.error('[LOGIN] JWT_SECRET no configurado para user login');
+            return NextResponse.json(
+                { success: false, message: "Configuración de seguridad incompleta." },
+                { status: 500 }
+            );
+        }
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
         return NextResponse.json(
             {
@@ -80,7 +100,11 @@ export async function POST(req) {
             { status: 200 }
         );
     } catch (error) {
-        console.error("POST /api/auth/login error:", error);
+        console.error("[LOGIN] === ERROR EN LOGIN ===");
+        console.error("[LOGIN] Error message:", error.message);
+        console.error("[LOGIN] Error stack:", error.stack);
+        console.error("[LOGIN] Error code:", error.code);
+        console.error("[LOGIN] Error details:", error);
         return NextResponse.json(
             { success: false, message: "Error interno del sistema de contención. Protocolo de seguridad activado." },
             { status: 500 }

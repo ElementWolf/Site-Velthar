@@ -48,9 +48,11 @@ function initializeFirebase() {
       }
       
       if (!serviceAccountString) {
-        console.error('❌ Ninguna variable de Firebase encontrada');
+        console.error('❌ Variable de Firebase no encontrada o vacía');
+        console.error('FIREBASE_SERVICE_ACCOUNT_JSON type:', typeof process.env.FIREBASE_SERVICE_ACCOUNT_JSON, 'value length:', process.env.FIREBASE_SERVICE_ACCOUNT_JSON?.length || 'N/A');
+        console.error('FIREBASE_SERVICE_ACCOUNT type:', typeof process.env.FIREBASE_SERVICE_ACCOUNT, 'value length:', process.env.FIREBASE_SERVICE_ACCOUNT?.length || 'N/A');
         console.error('Variables disponibles:', Object.keys(process.env));
-        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON o FIREBASE_SERVICE_ACCOUNT no está configurada.');
+        throw new Error('La variable de entorno FIREBASE_SERVICE_ACCOUNT_JSON o FIREBASE_SERVICE_ACCOUNT no está configurada o está vacía.');
       }
       
       console.log('✅ Variable de Firebase encontrada');
