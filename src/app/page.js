@@ -14,7 +14,7 @@ export default function Home() {
       {/* Main Content Area */}
       <div className="flex flex-col lg:flex-row">
         {/* Left and Center Content */}
-        <div className="flex-1 pt-48 pb-8 px-2 sm:px-4 lg:px-12">
+        <div className="flex-1 pb-8 px-2 sm:px-4 lg:px-12">
           <div className="max-w-5xl mx-auto">
             {/* Warning Banner */}
             <div className="relative bg-white border-4 border-black mb-10 p-6 sm:p-8 md:p-10 lg:p-16 text-center shadow-lg">

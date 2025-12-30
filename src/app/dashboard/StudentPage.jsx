@@ -56,7 +56,7 @@ function StudentPage() {
     }, []);
 
     return (
-        <div className="grow flex flex-col md:flex-row p-2 sm:p-4 md:p-6 bg-black text-white min-h-screen pt-32 overflow-x-hidden">
+        <div className="grow flex flex-col md:flex-row p-2 sm:p-4 md:p-6 bg-black text-white min-h-screen overflow-x-hidden">
             {/* Left Panel */}
             <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-md mb-4 md:mb-0 flex flex-col gap-6">
                 {/* Saldo */}
