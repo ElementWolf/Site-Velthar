@@ -64,22 +64,21 @@ const DynamicAuth = ({ params }) => {
     };
 
     return (
-        <div className="login-bg grow flex items-center justify-center px-4" style={{background: 'linear-gradient(90deg, #3465B4 0%, #C62B34 100%)'}}>
-            <div className="w-full max-w-lg bg-white p-6 rounded-xl shadow-lg flex flex-col gap-2">
-                <div>
-                    <h1 className="text-3xl font-bold text-center text-gray-800 mb-1">
-                        Merlyn Bills
+        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+            <div className="w-full max-w-lg bg-gray-900 p-8 rounded-lg shadow-lg border border-red-600 flex flex-col gap-2">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-red-500 mb-2">
+                        SCP Foundation
                     </h1>
-                    <p className="text-md text-center text-gray-600 mb-5">
-                        Sistema de gestión de incentivos académicos
-                    </p>
+                    <p className="text-gray-400">Secure. Contain. Protect.</p>
+                    <p className="text-sm text-gray-500 mt-2">Acceso Autorizado Solo</p>
                 </div>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     {!isLogin && (
                         <div className="flex gap-3">
                             <div className="w-1/2">
-                                <label className="block font-medium text-gray-700 mb-1">
+                                <label className="block font-medium text-gray-300 mb-1">
                                     Nombre
                                 </label>
                                 <input
@@ -88,11 +87,11 @@ const DynamicAuth = ({ params }) => {
                                     value={inputValues.firstName}
                                     onChange={handleChange}
                                     placeholder="Ingrese su nombre"
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    className="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                                 />
                             </div>
                             <div className="w-1/2">
-                                <label className="block font-medium text-gray-700 mb-1">
+                                <label className="block font-medium text-gray-300 mb-1">
                                     Apellido
                                 </label>
                                 <input
@@ -101,28 +100,28 @@ const DynamicAuth = ({ params }) => {
                                     value={inputValues.lastName}
                                     onChange={handleChange}
                                     placeholder="Ingrese su apellido"
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    className="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                                 />
                             </div>
                         </div>
                     )}
 
                     <div>
-                        <label className="block font-medium text-gray-700 mb-1">
-                            Cédula de Identidad
+                        <label className="block font-medium text-gray-300 mb-1">
+                            ID de Usuario
                         </label>
                         <input
                             type="text"
                             name="id"
                             value={inputValues.id}
                             onChange={handleChange}
-                            placeholder="Ingrese su cédula"
-                            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Ingrese su ID"
+                            className="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                     </div>
 
                     <div>
-                        <label className="block font-medium text-gray-700 mb-1">
+                        <label className="block font-medium text-gray-300 mb-1">
                             Contraseña
                         </label>
                         <input
@@ -131,13 +130,13 @@ const DynamicAuth = ({ params }) => {
                             value={inputValues.password}
                             onChange={handleChange}
                             placeholder="Ingrese su contraseña"
-                            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full py-2 bg-[#C62B34] text-white font-semibold rounded-md hover:opacity-90 transition cursor-pointer flex items-center justify-center min-h-[2.75rem] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="w-full py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition cursor-pointer flex items-center justify-center min-h-[2.75rem] active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
                         disabled={loading}
                     >
                         {loading ? (
@@ -146,33 +145,38 @@ const DynamicAuth = ({ params }) => {
                                 Cargando...
                             </span>
                         ) : (
-                            isLogin ? "Iniciar Sesión" : "Registrarse"
+                            isLogin ? "Iniciar Sesión" : "Solicitar Registro"
                         )}
                     </button>
                 </form>
 
-                <div className="mt-5 text-center text-sm text-gray-600">
+                <div className="mt-5 text-center text-sm text-gray-400">
                     {isLogin ? (
                         <>
-                            ¿No tienes una cuenta?{" "}
+                            ¿No tienes cuenta?{" "}
                             <button
                                 onClick={handleSwitch}
-                                className="text-blue-600 font-medium hover:underline cursor-pointer"
+                                className="text-red-400 font-medium hover:text-red-300 underline cursor-pointer"
                             >
                                 Regístrate
                             </button>
                         </>
                     ) : (
                         <>
-                            ¿Ya tienes una cuenta?{" "}
+                            ¿Ya tienes cuenta?{" "}
                             <button
                                 onClick={handleSwitch}
-                                className="text-blue-600 font-medium hover:underline cursor-pointer"
+                                className="text-red-400 font-medium hover:text-red-300 underline cursor-pointer"
                             >
                                 Iniciar Sesión
                             </button>
                         </>
                     )}
+                </div>
+
+                <div className="mt-4 text-center text-xs text-gray-600">
+                    <p>Acceso restringido a personal autorizado de la Fundación SCP.</p>
+                    <p>Velthar Division - Site-██</p>
                 </div>
             </div>
         </div>
