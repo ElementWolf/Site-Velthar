@@ -56,21 +56,21 @@ function StudentPage() {
     }, []);
 
     return (
-        <div className="grow flex flex-col md:flex-row p-4 md:p-6 bg-gradient-to-br from-[#F8D7DA] via-[#F3F4F6] to-[#E3EAFD] min-h-screen">
+        <div className="grow flex flex-col md:flex-row p-4 md:p-6 bg-black text-white min-h-screen pt-20">
             {/* Left Panel */}
-            <div className="w-full md:w-1/4 bg-white border border-[#F3F4F6] rounded-2xl p-6 shadow-md mb-4 md:mb-0 flex flex-col gap-6">
+            <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md mb-4 md:mb-0 flex flex-col gap-6">
                 {/* Saldo */}
                 <div>
-                    <h2 className="text-lg font-bold text-[#3465B4] mb-4">Mi Saldo</h2>
+                    <h2 className="text-lg font-bold text-red-500 mb-4">Mi Saldo</h2>
                     {saldoLoading ? <SaldoShimmer /> : <>
-                      <p className="text-3xl font-bold text-[#C62B34] mb-1">{userPoints} MB</p>
+                      <p className="text-3xl font-bold text-red-300 mb-1">{userPoints} MB</p>
                       {(pendingAmount > 0 || committedPoints > 0) && (
-                        <div className="text-sm text-gray-600 mb-5">
+                        <div className="text-sm text-gray-400 mb-5">
                       {pendingAmount > 0 && (
-                            <p className="text-yellow-600">-({pendingAmount} MB pendientes de canje)</p>
+                            <p className="text-yellow-400">-({pendingAmount} MB pendientes de canje)</p>
                       )}
                           {committedPoints > 0 && (
-                            <p className="text-blue-600">-({committedPoints} MB comprometidos en subastas)</p>
+                            <p className="text-blue-400">-({committedPoints} MB comprometidos en subastas)</p>
                           )}
                         </div>
                       )}
@@ -85,12 +85,12 @@ function StudentPage() {
 
                 {/* Panel de Control */}
                 <div>
-                    <h3 className="text-md font-semibold text-[#3465B4] mb-2">Panel de Control</h3>
+                    <h3 className="text-md font-semibold text-red-500 mb-2">Panel de Control</h3>
                 <ul className="space-y-2">
                     <li>
                         <button
                             onClick={() => setActiveTab('historial')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'historial' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'historial' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Mi Historial
                         </button>
@@ -98,7 +98,7 @@ function StudentPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('canjear')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'canjear' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'canjear' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Canjear Merlyn Bills
                         </button>
@@ -106,7 +106,7 @@ function StudentPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('subastas')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'subastas' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'subastas' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Subastas
                         </button>
@@ -114,7 +114,7 @@ function StudentPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('publico')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'publico' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'publico' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Ranking, Estadísticas y Logros
                         </button>
@@ -124,7 +124,7 @@ function StudentPage() {
             </div>
 
             {/* Right Panel */}
-            <div className="w-full md:w-3/4 md:ml-8 bg-white border border-[#F3F4F6] rounded-2xl shadow-lg p-8 md:p-10 animate-slide-up-fade">
+            <div className="w-full md:w-3/4 md:ml-8 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-8 md:p-10 animate-slide-up-fade text-white">
                 {activeTab === 'historial' && (
                     <StudentTransactionHistory onAction={refreshSaldo} />
                 )}

@@ -23,10 +23,10 @@ function AdminPage() {
     // Si no estamos en el cliente, mostrar loading
     if (!isClient) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F8D7DA] via-[#F3F4F6] to-[#E3EAFD]">
+            <div className="min-h-screen flex items-center justify-center bg-black">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C62B34] mx-auto mb-4"></div>
-                    <p className="text-gray-600">Cargando panel de administración...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+                    <p className="text-gray-300">Cargando panel de administración...</p>
                 </div>
             </div>
         );
@@ -74,15 +74,15 @@ function AdminPage() {
     };
 
     return (
-        <div className="grow flex flex-col md:flex-row p-4 md:p-6 bg-gradient-to-br from-[#F8D7DA] via-[#F3F4F6] to-[#E3EAFD] min-h-screen">
+        <div className="grow flex flex-col md:flex-row p-4 md:p-6 bg-black text-white min-h-screen pt-20">
             {/* Left Panel */}
-            <div className="w-full md:w-1/4 bg-white border border-[#F3F4F6] rounded-2xl p-6 shadow-md mb-4 md:mb-0">
-                <h3 className="text-lg font-bold text-[#3465B4] mb-4">Panel de Control</h3>
+            <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md mb-4 md:mb-0">
+                <h3 className="text-lg font-bold text-red-500 mb-4">Panel de Control</h3>
                 <ul className="space-y-2">
                     <li>
                         <button
                             onClick={() => setActiveTab('asignar')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'asignar' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'asignar' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Asignar Merlyn Bills
                         </button>
@@ -90,7 +90,7 @@ function AdminPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('registros')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'registros' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'registros' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Solicitudes de Registro
                         </button>
@@ -98,7 +98,7 @@ function AdminPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('estudiantes')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'estudiantes' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'estudiantes' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Estudiantes
                         </button>
@@ -106,7 +106,7 @@ function AdminPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('historial')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'historial' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'historial' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Historial de Transacciones
                         </button>
@@ -114,7 +114,7 @@ function AdminPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('canjes')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'canjes' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'canjes' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Gestionar Canjes
                         </button>
@@ -122,7 +122,7 @@ function AdminPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('subastas')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'subastas' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'subastas' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Subastas
                         </button>
@@ -130,7 +130,7 @@ function AdminPage() {
                     <li>
                         <button
                             onClick={() => setActiveTab('publico')}
-                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'publico' ? 'bg-[#F8D7DA] text-[#C62B34] shadow' : 'text-gray-700 hover:bg-[#F3F4F6] hover:text-[#C62B34]'}`}
+                            className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'publico' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
                             Ranking, Estadísticas y Logros
                         </button>
@@ -139,7 +139,7 @@ function AdminPage() {
             </div>
 
             {/* Right Panel */}
-            <div className="w-full md:w-3/4 md:ml-8 bg-white border border-[#F3F4F6] rounded-2xl shadow-lg p-8 md:p-10 animate-slide-up-fade">
+            <div className="w-full md:w-3/4 md:ml-8 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-8 md:p-10 animate-slide-up-fade text-white">
                 {renderActiveTab()}
             </div>
         </div>
