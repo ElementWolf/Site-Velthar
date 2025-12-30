@@ -29,14 +29,15 @@ export async function POST(req) {
             );
         }
 
-        console.log('[LOGIN] Login admin exitoso');
-        if (!process.env.JWT_SECRET) {
-            console.error('[LOGIN] JWT_SECRET no configurado para admin login');
-            return NextResponse.json(
-                { success: false, message: "Configuración de seguridad incompleta." },
-                { status: 500 }
-            );
-        }
+        if (isAdmin(id, password)) {
+            console.log('[LOGIN] Login admin exitoso');
+            if (!process.env.JWT_SECRET) {
+                console.error('[LOGIN] JWT_SECRET no configurado para admin login');
+                return NextResponse.json(
+                    { success: false, message: "Configuración de seguridad incompleta." },
+                    { status: 500 }
+                );
+            }
             const token = jwt.sign({ userId: process.env.ADMIN_USERNAME }, process.env.JWT_SECRET, { expiresIn: "1h" });
             return NextResponse.json(
                 {

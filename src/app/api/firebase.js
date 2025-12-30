@@ -103,8 +103,7 @@ function initializeFirebase() {
       }
       
       console.log('✅ Todos los campos necesarios están presentes');
-    }
-
+    
     // Verificar si ya hay una app inicializada
     if (admin.apps.length === 0) {
       console.log('🔄 Inicializando Firebase Admin SDK...');
