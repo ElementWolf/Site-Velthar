@@ -56,9 +56,9 @@ function StudentPage() {
     }, []);
 
     return (
-        <div className="grow flex flex-col md:flex-row p-4 md:p-6 bg-black text-white min-h-screen pt-20">
+        <div className="grow flex flex-col md:flex-row p-2 sm:p-4 md:p-6 bg-black text-white min-h-screen pt-32 overflow-x-hidden">
             {/* Left Panel */}
-            <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-md mb-4 md:mb-0 flex flex-col gap-6">
+            <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-md mb-4 md:mb-0 flex flex-col gap-6">
                 {/* Saldo */}
                 <div>
                     <h2 className="text-lg font-bold text-red-500 mb-4">Mi Saldo</h2>
@@ -124,7 +124,7 @@ function StudentPage() {
             </div>
 
             {/* Right Panel */}
-            <div className="w-full md:w-3/4 md:ml-8 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-8 md:p-10 animate-slide-up-fade text-white">
+            <div className="w-full md:w-3/4 md:ml-8 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 lg:p-10 animate-slide-up-fade text-white overflow-x-auto">
                 {activeTab === 'historial' && (
                     <StudentTransactionHistory onAction={refreshSaldo} />
                 )}

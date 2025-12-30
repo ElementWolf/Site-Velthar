@@ -64,8 +64,8 @@ const DynamicAuth = ({ params }) => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 pt-24">
-            <div className="w-full max-w-lg bg-gray-900 p-8 rounded-lg shadow-lg border border-red-600 flex flex-col gap-2">
+        <div className="min-h-screen bg-black text-white flex items-center justify-center px-2 sm:px-4 pt-32 overflow-x-hidden">
+            <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-gray-900 p-6 sm:p-8 rounded-lg shadow-lg border border-red-600 flex flex-col gap-2">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-red-500 mb-2">
                         SCP Foundation
