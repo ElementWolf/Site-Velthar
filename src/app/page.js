@@ -10,28 +10,28 @@ export default function Home() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Main Content Area */}
       <div className="flex flex-col lg:flex-row">
         {/* Left and Center Content */}
-        <div className="flex-1 pt-44 pb-8 px-4 lg:px-12">
+        <div className="flex-1 pt-48 pb-8 px-2 sm:px-4 lg:px-12">
           <div className="max-w-5xl mx-auto">
             {/* Warning Banner */}
-            <div className="relative bg-white border-4 border-black mb-10 p-10 lg:p-16 text-center shadow-lg">
+            <div className="relative bg-white border-4 border-black mb-10 p-6 sm:p-8 md:p-10 lg:p-16 text-center shadow-lg">
               {/* Background Watermark - SCP Logo Style */}
               <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center pointer-events-none">
-                <div className="text-[200px] lg:text-[300px] font-bold select-none">⚛</div>
+                <div className="text-[100px] sm:text-[150px] md:text-[200px] lg:text-[300px] font-bold select-none">⚛</div>
               </div>
               
               {/* Warning Text */}
               <div className="relative z-10">
-                <p className="text-base lg:text-lg font-bold mb-3 text-black uppercase tracking-wide">
+                <p className="text-sm sm:text-base lg:text-lg font-bold mb-3 text-black uppercase tracking-wide">
                   ADVERTENCIA: LA BASE DE DATOS DE LA FUNDACIÓN ESTÁ
                 </p>
-                <h1 className="text-7xl lg:text-9xl font-black text-red-600 mb-5 tracking-tighter leading-none">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-black text-red-600 mb-5 tracking-tighter leading-none">
                   CLASIFICADA
                 </h1>
-                <p className="text-base lg:text-lg font-bold text-black uppercase tracking-wide">
+                <p className="text-sm sm:text-base lg:text-lg font-bold text-black uppercase tracking-wide">
                   EL PERSONAL NO AUTORIZADO SERÁ RASTREADO, LOCALIZADO Y DETENIDO
                 </p>
               </div>
@@ -64,7 +64,7 @@ export default function Home() {
         </div>
 
         {/* Right Sidebar */}
-        <aside className="w-full lg:w-96 bg-gray-100 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-8 lg:p-10">
+        <aside className="w-full lg:w-96 bg-gray-100 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-6 sm:p-8 lg:p-10">
           <div className="space-y-10">
             {/* Get Started Section */}
             <div>
