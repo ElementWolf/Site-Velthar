@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       <UserAuthProvider>
         <RouteGuardProvider>
           <body
-            className={`antialiased flex flex-col min-h-screen overflow-x-hidden pt-64 bg-white`}
+            className={`antialiased flex flex-col min-h-screen overflow-x-hidden pt-64 bg-black`}
           >
             <ToastProvider>
               <Header />

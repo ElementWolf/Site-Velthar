@@ -1,8 +1,41 @@
 import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 import { FindUserById, addRegistrationRequest } from "../../data-handler";
 
 export async function POST(req) {
     try {
+        // Verificar token de admin
+        const authHeader = req.headers.get('authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return NextResponse.json(
+                { success: false, message: "Acceso denegado. Solo el administrador puede registrar usuarios." },
+                { status: 403 }
+            );
+        }
+
+        const token = authHeader.substring(7);
+        if (!process.env.JWT_SECRET) {
+            return NextResponse.json(
+                { success: false, message: "Configuración de seguridad incompleta." },
+                { status: 500 }
+            );
+        }
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            if (decoded.userId !== process.env.ADMIN_USERNAME) {
+                return NextResponse.json(
+                    { success: false, message: "Token inválido o no autorizado." },
+                    { status: 403 }
+                );
+            }
+        } catch (err) {
+            return NextResponse.json(
+                { success: false, message: "Token inválido." },
+                { status: 403 }
+            );
+        }
+
         const data = await req.json();
 
         // Basic validation
