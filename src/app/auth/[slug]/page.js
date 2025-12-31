@@ -77,10 +77,10 @@ const DynamicAuth = ({ params }) => {
             <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-gray-900 p-6 sm:p-8 rounded-lg shadow-lg border border-red-600 flex flex-col gap-2">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-red-500 mb-2">
-                        SCP Foundation
+                        Fundación SCP - Velthar
                     </h1>
-                    <p className="text-gray-400">Secure. Contain. Protect.</p>
-                    <p className="text-sm text-gray-500 mt-2">Acceso Autorizado Solo</p>
+                    <p className="text-gray-400">Asegurar. Contener. Proteger.</p>
+                    <p className="text-sm text-gray-500 mt-2">Acceso Nivel 1 Requerido</p>
                 </div>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
@@ -154,38 +154,22 @@ const DynamicAuth = ({ params }) => {
                                 Cargando...
                             </span>
                         ) : (
-                            isLogin ? "Iniciar Sesión" : "Solicitar Registro"
+                            isLogin ? "Iniciar Sesión" : "Acceso Denegado - Contactar O5"
                         )}
                     </button>
                 </form>
 
                 <div className="mt-5 text-center text-sm text-gray-400">
                     {isLogin ? (
-                        <>
-                            ¿No tienes cuenta?{" "}
-                            <button
-                                onClick={handleSwitch}
-                                className="text-red-400 font-medium hover:text-red-300 underline cursor-pointer"
-                            >
-                                Regístrate
-                            </button>
-                        </>
+                        <p>Acceso restringido. Contactar administración para credenciales.</p>
                     ) : (
-                        <>
-                            ¿Ya tienes cuenta?{" "}
-                            <button
-                                onClick={handleSwitch}
-                                className="text-red-400 font-medium hover:text-red-300 underline cursor-pointer"
-                            >
-                                Iniciar Sesión
-                            </button>
-                        </>
+                        <p>Solicitud procesada. Espere aprobación del Consejo O5.</p>
                     )}
                 </div>
 
                 <div className="mt-4 text-center text-xs text-gray-600">
-                    <p>Acceso restringido a personal autorizado de la Fundación SCP.</p>
-                    <p>Velthar Division - Site-██</p>
+                    <p>Fundación SCP - División Velthar</p>
+                    <p>Site-██ - Protocolo de Contención Activo</p>
                 </div>
             </div>
         </div>

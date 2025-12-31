@@ -94,7 +94,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('asignar')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'asignar' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Distribución de Recursos de Contención
+                            Registro de Personal
                         </button>
                     </li>
                     <li>
