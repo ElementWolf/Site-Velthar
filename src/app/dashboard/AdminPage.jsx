@@ -26,7 +26,7 @@ function AdminPage() {
             <div className="min-h-screen flex items-center justify-center bg-black">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-                    <p className="text-gray-300">Cargando panel de administración...</p>
+                    <p className="text-gray-300">Accediendo a la Base de Datos de la Fundación...</p>
                 </div>
             </div>
         );
@@ -77,14 +77,24 @@ function AdminPage() {
         <div className="grow flex flex-col md:flex-row p-2 sm:p-4 md:p-6 bg-black text-white min-h-screen overflow-x-hidden">
             {/* Left Panel */}
             <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-md mb-4 md:mb-0">
-                <h3 className="text-lg font-bold text-red-500 mb-4">Panel de Control</h3>
+                <h3 className="text-lg font-bold text-red-500 mb-4">Centro de Comando O5</h3>
+                
+                {/* Estado del Sitio */}
+                <div className="mb-6 p-4 bg-gray-800 rounded-lg border border-gray-600">
+                    <h4 className="text-md font-semibold text-red-400 mb-2">Estado del Sitio</h4>
+                    <p className="text-green-400 text-sm font-bold">SEGURIDAD: VERDE</p>
+                    <p className="text-gray-400 text-xs mt-1">
+                        Todas las anomalías contenidas. Operaciones normales.
+                    </p>
+                </div>
+                
                 <ul className="space-y-2">
                     <li>
                         <button
                             onClick={() => setActiveTab('asignar')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'asignar' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Asignar Merlyn Bills
+                            Distribución de Recursos de Contención
                         </button>
                     </li>
                     <li>
@@ -92,7 +102,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('registros')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'registros' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Solicitudes de Registro
+                            Solicitudes de Acceso Nivel 1
                         </button>
                     </li>
                     <li>
@@ -100,7 +110,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('estudiantes')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'estudiantes' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Estudiantes
+                            Base de Datos de Personal
                         </button>
                     </li>
                     <li>
@@ -108,7 +118,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('historial')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'historial' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Historial de Transacciones
+                            Registros de Contención
                         </button>
                     </li>
                     <li>
@@ -116,7 +126,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('canjes')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'canjes' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Gestionar Canjes
+                            Intercambios de Recursos
                         </button>
                     </li>
                     <li>
@@ -124,7 +134,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('subastas')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'subastas' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Subastas
+                            Subastas de Anomalías
                         </button>
                     </li>
                     <li>
@@ -132,7 +142,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('publico')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'publico' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Ranking, Estadísticas y Logros
+                            Informes de Campo
                         </button>
                     </li>
                 </ul>

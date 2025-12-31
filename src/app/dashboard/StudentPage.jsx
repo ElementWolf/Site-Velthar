@@ -78,6 +78,30 @@ function StudentPage() {
                     </>}
                 </div>
 
+                {/* Clasificación de Seguridad */}
+                <div>
+                    <h2 className="text-lg font-bold text-red-500 mb-4">Clasificación de Seguridad</h2>
+                    <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+                        <p className="text-gray-300 text-sm mb-2">Nivel de Acceso:</p>
+                        <p className="text-green-400 font-bold text-lg">NIVEL 1 - PERSONAL AUTORIZADO</p>
+                        <p className="text-gray-400 text-xs mt-2">
+                            Acceso limitado a recursos de contención básicos. Requiere aprobación para operaciones avanzadas.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Estado de Misión */}
+                <div>
+                    <h2 className="text-lg font-bold text-red-500 mb-4">Estado de Misión</h2>
+                    <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+                        <p className="text-gray-300 text-sm mb-2">Estado Actual:</p>
+                        <p className="text-blue-400 font-bold text-lg">ACTIVO</p>
+                        <p className="text-gray-400 text-xs mt-2">
+                            Agente de campo operativo. Listo para misiones de contención.
+                        </p>
+                    </div>
+                </div>
+
                 {/* Anuncios */}
                 <div>
                     <StudentAnnouncements />
@@ -85,14 +109,14 @@ function StudentPage() {
 
                 {/* Panel de Control */}
                 <div>
-                    <h3 className="text-md font-semibold text-red-500 mb-2">Panel de Control</h3>
+                    <h3 className="text-md font-semibold text-red-500 mb-2">Centro de Operaciones</h3>
                 <ul className="space-y-2">
                     <li>
                         <button
                             onClick={() => setActiveTab('historial')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'historial' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Mi Historial
+                            Registros Personales
                         </button>
                     </li>
                     <li>
@@ -100,7 +124,7 @@ function StudentPage() {
                             onClick={() => setActiveTab('canjear')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'canjear' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Canjear Merlyn Bills
+                            Intercambio de Recursos
                         </button>
                     </li>
                     <li>
@@ -108,7 +132,7 @@ function StudentPage() {
                             onClick={() => setActiveTab('subastas')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'subastas' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Subastas
+                            Subastas Disponibles
                         </button>
                     </li>
                     <li>
@@ -116,7 +140,7 @@ function StudentPage() {
                             onClick={() => setActiveTab('publico')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'publico' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Ranking, Estadísticas y Logros
+                            Informes de Misión
                         </button>
                     </li>
                 </ul>
