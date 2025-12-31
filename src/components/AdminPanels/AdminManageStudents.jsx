@@ -18,12 +18,19 @@ const AdminManageStudents = () => {
         lastName: '',
         password: ''
     });
+    const [addForm, setAddForm] = useState({
+        firstName: '',
+        lastName: '',
+        id: '',
+        password: ''
+    });
     const [validationErrors, setValidationErrors] = useState({});
     const [showToast, setShowToast] = useState(false);
     const [toastMsg, setToastMsg] = useState('');
     const [error, setError] = useState('');
     const [isClient, setIsClient] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [showAddForm, setShowAddForm] = useState(false);
 
     // Asegurar que estamos en el cliente
     useEffect(() => {
@@ -104,21 +111,85 @@ const AdminManageStudents = () => {
         }
     };
 
-    const validateForm = () => {
+    const handleAddInputChange = (e) => {
+        const { name, value } = e.target;
+        setAddForm(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const validateAddForm = () => {
         const errors = {};
         
-        const firstNameValidation = validateName(editForm.firstName, 'Nombre');
+        if (!addForm.id?.trim()) {
+            errors.id = 'La cédula es obligatoria';
+        } else {
+            const cedulaValidation = validateCedula(addForm.id);
+            if (!cedulaValidation.isValid) {
+                errors.id = cedulaValidation.message;
+            }
+        }
+        
+        const firstNameValidation = validateName(addForm.firstName, 'Nombre');
         if (!firstNameValidation.isValid) {
             errors.firstName = firstNameValidation.message;
         }
         
-        const lastNameValidation = validateName(editForm.lastName, 'Apellido');
+        const lastNameValidation = validateName(addForm.lastName, 'Apellido');
         if (!lastNameValidation.isValid) {
             errors.lastName = lastNameValidation.message;
         }
         
+        if (!addForm.password?.trim()) {
+            errors.password = 'La contraseña es obligatoria';
+        } else if (addForm.password.length < 6) {
+            errors.password = 'La contraseña debe tener al menos 6 caracteres';
+        }
+        
         setValidationErrors(errors);
         return Object.keys(errors).length === 0;
+    };
+
+    const handleAddSubmit = async () => {
+        if (!validateAddForm()) {
+            setToastMsg('Por favor corrige los errores en el formulario');
+            setShowToast(true);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await api.post('/auth/register', {
+                id: addForm.id.trim(),
+                firstName: addForm.firstName.trim(),
+                lastName: addForm.lastName.trim(),
+                password: addForm.password
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            setToastMsg('Estudiante registrado exitosamente');
+            setShowToast(true);
+            setShowAddForm(false);
+            setAddForm({
+                firstName: '',
+                lastName: '',
+                id: '',
+                password: ''
+            });
+            fetchStudents(); // Recargar lista
+        } catch (err) {
+            console.error('Error adding student:', err);
+            const errorMessage = err.response?.data?.message || 'Error al registrar estudiante';
+            setToastMsg(errorMessage);
+            setShowToast(true);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleSave = async () => {
@@ -257,6 +328,14 @@ const AdminManageStudents = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h2 className="text-2xl font-bold text-[#C62B34]">Gestión de Estudiantes</h2>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-2 student-management-buttons">
+                    <Tooltip content="Agregar nuevo estudiante">
+                        <button
+                            onClick={() => setShowAddForm(true)}
+                            className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold border border-[#C62B34] text-[#C62B34] bg-[#F8D7DA] hover:bg-[#C62B34] hover:text-white transition-all shadow active:scale-95 whitespace-nowrap"
+                        >
+                            ➕ Agregar Estudiante
+                        </button>
+                    </Tooltip>
                     <Tooltip content="Exportar lista de estudiantes a CSV">
                         <button
                             onClick={handleExportCSV}
@@ -528,6 +607,96 @@ const AdminManageStudents = () => {
                                     Cancelar
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showAddForm && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
+                        <h3 className="text-xl font-bold text-[#C62B34] mb-6">Agregar Nuevo Estudiante</h3>
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-600 mb-1">
+                                    Cédula *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="id"
+                                    value={addForm.id}
+                                    onChange={handleAddInputChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3465B4] focus:border-transparent"
+                                    placeholder="Ingrese la cédula"
+                                />
+                                {validationErrors.id && <p className="text-red-500 text-sm mt-1">{validationErrors.id}</p>}
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium text-gray-600 mb-1">
+                                    Nombre *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    value={addForm.firstName}
+                                    onChange={handleAddInputChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3465B4] focus:border-transparent"
+                                    placeholder="Ingrese el nombre"
+                                />
+                                {validationErrors.firstName && <p className="text-red-500 text-sm mt-1">{validationErrors.firstName}</p>}
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium text-gray-600 mb-1">
+                                    Apellido *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    value={addForm.lastName}
+                                    onChange={handleAddInputChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3465B4] focus:border-transparent"
+                                    placeholder="Ingrese el apellido"
+                                />
+                                {validationErrors.lastName && <p className="text-red-500 text-sm mt-1">{validationErrors.lastName}</p>}
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium text-gray-600 mb-1">
+                                    Contraseña *
+                                </label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={addForm.password}
+                                    onChange={handleAddInputChange}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3465B4] focus:border-transparent"
+                                    placeholder="Ingrese la contraseña"
+                                />
+                                {validationErrors.password && <p className="text-red-500 text-sm mt-1">{validationErrors.password}</p>}
+                            </div>
+                        </div>
+                        
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={handleAddSubmit}
+                                disabled={loading}
+                                className="flex-1 px-6 py-2 bg-[#C62B34] text-white rounded-lg hover:bg-[#A0232E] transition-colors font-medium disabled:opacity-50"
+                            >
+                                {loading ? 'Registrando...' : 'Registrar'}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowAddForm(false);
+                                    setAddForm({ firstName: '', lastName: '', id: '', password: '' });
+                                    setValidationErrors({});
+                                }}
+                                className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
+                            >
+                                Cancelar
+                            </button>
                         </div>
                     </div>
                 </div>

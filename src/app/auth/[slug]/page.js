@@ -20,12 +20,21 @@ const DynamicAuth = ({ params }) => {
     });
     const [loading, setLoading] = useState(false);
 
-    // Redirigir si ya está autenticado
+    // Redirigir si ya está autenticado o si no es admin intentando registrar
     useEffect(() => {
-        if (!authLoading && user) {
-            router.push("/dashboard");
+        if (!authLoading) {
+            if (user) {
+                if (!isLogin && user.type !== 'admin') {
+                    router.push(routesDictionary.login);
+                    return;
+                }
+                router.push("/dashboard");
+            } else if (!isLogin) {
+                // No logueado intentando registrar
+                router.push(routesDictionary.login);
+            }
         }
-    }, [user, authLoading, router]);
+    }, [user, authLoading, router, isLogin]);
 
     // Mostrar loading mientras se verifica la autenticación
     if (authLoading) {

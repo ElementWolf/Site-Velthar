@@ -73,6 +73,15 @@ const Header = () => {
                             {!user ? (
                                 <>
                                     <button
+                                        onClick={() => router.push(routesDictionary.login)}
+                                        className="text-white hover:text-gray-300 transition-colors"
+                                    >
+                                        Iniciar sesión
+                                    </button>
+                                </>
+                            ) : user.type === 'admin' ? (
+                                <>
+                                    <button
                                         onClick={() => router.push(routesDictionary.register)}
                                         className="text-white hover:text-gray-300 transition-colors"
                                     >
@@ -80,10 +89,10 @@ const Header = () => {
                                     </button>
                                     <span className="text-gray-600">o</span>
                                     <button
-                                        onClick={() => router.push(routesDictionary.login)}
+                                        onClick={() => logOut()}
                                         className="text-white hover:text-gray-300 transition-colors"
                                     >
-                                        Iniciar sesión
+                                        Salir
                                     </button>
                                 </>
                             ) : (
