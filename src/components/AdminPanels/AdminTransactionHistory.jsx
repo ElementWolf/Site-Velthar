@@ -3,34 +3,35 @@ import api from '@/axios';
 import LoadingSpinner from '../LoadingSpinner';
 import Tooltip from '../Tooltip';
 import Toast from '../Toast';
-import { exportStudentsList } from '@/lib/csvExport'; // Reutilizamos la lógica de exportación
+import { exportStudentsList } from '@/lib/csvExport';
 
 /**
- * COMPONENTE: AdminTransactionHistory
- * Temática: Registro de Transferencia de Datos - Nivel de Seguridad 4
+ * COMPONENTE: AdminTransactionHistory (RE-CLASIFICADO)
+ * Temática: Registro de Contención y Transferencia de Activos - Nivel 4
  */
 
 const formatDate = (date) => {
-    if (!date) return 'Sin fecha';
+    if (!date) return '00/00/00 00:00';
     try {
         return new Date(date).toLocaleString('es-ES', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            second: '2-digit'
         });
     } catch (error) {
-        return 'Fecha inválida';
+        return 'ERROR_DATE_CORRUPT';
     }
 };
 
 const formatAmount = (amount) => {
-    if (amount === undefined || amount === null) return '0 MB';
+    if (amount === undefined || amount === null) return '0.00 MB';
     const strAmount = String(amount);
     const cleanAmount = strAmount.replace(/^[+-]/, '');
-    const sign = strAmount.startsWith('-') ? '-' : '+';
-    return `${sign}${cleanAmount} MB`;
+    const sign = strAmount.startsWith('-') ? '▼' : '▲';
+    return `${sign} ${cleanAmount} MB`;
 };
 
 const AdminTransactionHistory = () => {
@@ -41,7 +42,6 @@ const AdminTransactionHistory = () => {
     const [toastMsg, setToastMsg] = useState('');
     const [isClient, setIsClient] = useState(false);
 
-    // Estados para filtros operativos
     const [filters, setFilters] = useState({
         type: '',
         student: '',
@@ -63,14 +63,12 @@ const AdminTransactionHistory = () => {
             const res = await api.get('/api/admin/history');
             setTransactions(res.data.history || []);
         } catch (err) {
-            setError('Error de conexión con la base de datos central de la Fundación.');
-            console.error('Fetch error:', err);
+            setError('FALLO EN LA SINCRONIZACIÓN CON EL NÚCLEO DE DATOS DE LA FUNDACIÓN.');
         } finally {
             setLoading(false);
         }
     };
 
-    // Lógica de filtrado en tiempo real
     const filteredTransactions = useMemo(() => {
         return transactions.filter(tx => {
             if (filters.type && tx.type !== filters.type) return false;
@@ -102,38 +100,47 @@ const AdminTransactionHistory = () => {
 
     const handleExport = () => {
         if (filteredTransactions.length === 0) return;
-        exportStudentsList(filteredTransactions); // Asumiendo que la función es genérica para objetos
-        setToastMsg('Registro de transacciones exportado a terminal local.');
+        exportStudentsList(filteredTransactions);
+        setToastMsg('REGISTRO DE CONTENCIÓN DESCARGADO EXITOSAMENTE.');
         setShowToast(true);
     };
 
     if (!isClient || loading) return <LoadingSpinner />;
 
     return (
-        <div className="bg-white border-2 border-[#F3F4F6] rounded-2xl shadow-xl p-4 sm:p-8 animate-slide-up-fade">
-            {/* Cabecera Estilo Fundación */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b-2 border-[#F8D7DA] pb-6">
-                <div>
-                    <h2 className="text-2xl sm:text-3xl font-black text-[#C62B34] tracking-tighter uppercase">
-                        Historial de Transacciones
-                    </h2>
-                    <p className="text-[#3465B4] text-xs font-mono font-bold mt-1">
-                        SISTEMA DE MONITOREO DE RECURSOS DIGITALES | NIVEL 4
-                    </p>
+        <div className="bg-white border-2 border-black rounded-sm shadow-[8px_8px_0px_0px_rgba(0,0,0,0.1)] p-4 sm:p-8 animate-slide-up-fade font-sans">
+            {/* CABECERA: PROTOCOLO DE SEGURIDAD */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b-4 border-black pb-6">
+                <div className="flex items-center gap-4">
+                    <div className="hidden sm:block p-2 bg-black text-white rounded-full">
+                        <svg width="40" height="40" viewBox="0 0 100 100" fill="currentColor">
+                            <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0zm0 90C27.9 90 10 72.1 10 50S27.9 10 50 10s40 17.9 40 40-17.9 40-40 40z"/>
+                            <circle cx="50" cy="50" r="15"/>
+                            <path d="M50 25v10M25 50h10M50 75v10M75 50h10"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tighter uppercase italic">
+                            Registros de Contención
+                        </h2>
+                        <p className="bg-black text-white text-[10px] font-mono px-2 py-0.5 inline-block mt-1">
+                            SEGURIDAD DE DATOS: NIVEL 4 (SECRETO)
+                        </p>
+                    </div>
                 </div>
                 
                 <div className="flex gap-2">
-                    <Tooltip content="Exportar registros filtrados">
+                    <Tooltip content="Exportar registros a Terminal">
                         <button
                             onClick={handleExport}
-                            className="flex items-center gap-2 bg-white border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white font-bold px-4 py-2 rounded-lg transition-all shadow-sm active:scale-95 text-sm"
+                            className="flex items-center gap-2 bg-white border-2 border-black text-black hover:bg-black hover:text-white font-black px-4 py-2 transition-all active:translate-y-1 text-xs uppercase"
                         >
-                            <span>📄</span> EXPORTAR CSV
+                            ENCRIPTAR Y EXPORTAR
                         </button>
                     </Tooltip>
                     <button
                         onClick={fetchHistory}
-                        className="bg-[#E3EAFD] text-[#3465B4] border-2 border-[#3465B4] font-bold p-2 rounded-lg hover:bg-[#3465B4] hover:text-white transition-all"
+                        className="border-2 border-black font-black p-2 hover:bg-gray-100 transition-all"
                     >
                         🔄
                     </button>
@@ -141,133 +148,133 @@ const AdminTransactionHistory = () => {
             </div>
 
             {error && (
-                <div className="mb-6 bg-[#F8D7DA] text-[#C62B34] border-l-4 border-[#C62B34] font-bold p-4 text-sm animate-pulse">
-                    ⚠️ ALERTA: {error}
+                <div className="mb-6 bg-[#C62B34] text-white font-black p-4 text-sm flex items-center gap-3">
+                    <span className="text-2xl">⚠️</span> {error}
                 </div>
             )}
 
-            {/* Panel de Filtros Operativos */}
-            <div className="bg-gray-50 rounded-xl p-5 mb-8 border border-gray-200">
+            {/* PANEL DE CONTROL DE BÚSQUEDA OPERATIVA */}
+            <div className="bg-gray-100 p-5 mb-8 border-2 border-black border-dashed">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                     <div>
-                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Clasificación</label>
+                        <label className="block text-[10px] font-black text-black uppercase mb-1">Clasificación Objeto</label>
                         <select
                             value={filters.type}
                             onChange={(e) => handleFilterChange('type', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none transition-colors"
+                            className="w-full border-2 border-black rounded-none px-2 py-1.5 text-sm focus:bg-yellow-50 outline-none transition-colors font-bold"
                         >
-                            <option value="">TODOS</option>
-                            {uniqueTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                            <option value="">[ TODOS ]</option>
+                            {uniqueTypes.map(type => <option key={type} value={type}>{type.toUpperCase()}</option>)}
                         </select>
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Sujeto (Nombre)</label>
+                        <label className="block text-[10px] font-black text-black uppercase mb-1">ID Sujeto (Nombre)</label>
                         <input
                             type="text"
-                            placeholder="Buscar..."
+                            placeholder="Identificar..."
                             value={filters.student}
                             onChange={(e) => handleFilterChange('student', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none"
+                            className="w-full border-2 border-black rounded-none px-2 py-1.5 text-sm focus:bg-yellow-50 outline-none font-bold"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Identificación</label>
+                        <label className="block text-[10px] font-black text-black uppercase mb-1">Cédula del Sujeto</label>
                         <input
                             type="text"
                             placeholder="V-..."
                             value={filters.cedula}
                             onChange={(e) => handleFilterChange('cedula', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none"
+                            className="w-full border-2 border-black rounded-none px-2 py-1.5 text-sm focus:bg-yellow-50 outline-none font-bold"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Estado de Transacción</label>
+                        <label className="block text-[10px] font-black text-black uppercase mb-1">Estado Operativo</label>
                         <select
                             value={filters.status}
                             onChange={(e) => handleFilterChange('status', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none"
+                            className="w-full border-2 border-black rounded-none px-2 py-1.5 text-sm focus:bg-yellow-50 outline-none font-bold"
                         >
-                            <option value="">TODOS</option>
-                            {uniqueStatuses.map(status => <option key={status} value={status}>{status}</option>)}
+                            <option value="">[ TODOS ]</option>
+                            {uniqueStatuses.map(status => <option key={status} value={status}>{status.toUpperCase()}</option>)}
                         </select>
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Rango Temporal</label>
+                        <label className="block text-[10px] font-black text-black uppercase mb-1">Registro Inicial</label>
                         <input
                             type="date"
                             value={filters.dateFrom}
                             onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm"
+                            className="w-full border-2 border-black rounded-none px-2 py-1.5 text-sm font-bold"
                         />
                     </div>
 
                     <div className="flex items-end">
                         <button
                             onClick={clearFilters}
-                            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 rounded-md transition-all text-xs uppercase"
+                            className="w-full bg-black text-white hover:bg-gray-800 font-black py-2.5 transition-all text-[10px] uppercase tracking-tighter"
                         >
-                            Reiniciar
+                            Limpiar Terminal
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Tabla de Registros */}
-            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-inner">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-[#F3F4F6]">
+            {/* TABLA DE CONTENCIÓN */}
+            <div className="overflow-x-auto border-2 border-black">
+                <table className="min-w-full divide-y-2 divide-black">
+                    <thead className="bg-black">
                         <tr>
-                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Sello Temporal</th>
-                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Sujeto</th>
-                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Tipo</th>
-                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Descripción</th>
-                            <th className="py-4 px-4 text-right text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Cuota</th>
-                            <th className="py-4 px-4 text-center text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Status</th>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-white uppercase tracking-widest">Stamp_UTC</th>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-white uppercase tracking-widest">Sujeto_ID</th>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-white uppercase tracking-widest">Tipo_Cont</th>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-white uppercase tracking-widest">Descripción_Log</th>
+                            <th className="py-4 px-4 text-right text-[10px] font-black text-white uppercase tracking-widest">Carga_Datos</th>
+                            <th className="py-4 px-4 text-center text-[10px] font-black text-white uppercase tracking-widest">Status_Red</th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-100">
+                    <tbody className="bg-white divide-y divide-gray-300">
                         {filteredTransactions.length === 0 ? (
                             <tr>
-                                <td colSpan="6" className="text-center py-12 text-gray-400 font-mono text-sm italic">
-                                    [ NO SE ENCONTRARON REGISTROS QUE COINCIDAN CON LOS CRITERIOS DE BÚSQUEDA ]
+                                <td colSpan="6" className="text-center py-20 text-black font-mono text-xs font-black uppercase">
+                                    [ ADVERTENCIA: NO SE ENCONTRARON ENTRADAS EN EL LOG CENTRAL ]
                                 </td>
                             </tr>
                         ) : (
                             filteredTransactions.map((tx, idx) => (
-                                <tr key={tx.id || idx} className="hover:bg-[#F8D7DA]/5 transition-colors group">
-                                    <td className="py-4 px-4 font-mono text-xs text-gray-500 whitespace-nowrap">
+                                <tr key={tx.id || idx} className="hover:bg-gray-50 transition-colors">
+                                    <td className="py-4 px-4 font-mono text-[11px] text-gray-600 border-r border-gray-100">
                                         {formatDate(tx.date)}
                                     </td>
-                                    <td className="py-4 px-4">
-                                        <div className="text-sm font-bold text-gray-800">{tx.student || 'Sujeto Desconocido'}</div>
-                                        <div className="text-[10px] font-mono text-[#3465B4]">{tx.cedula || 'N/A'}</div>
+                                    <td className="py-4 px-4 border-r border-gray-100">
+                                        <div className="text-sm font-black text-black">{tx.student || 'NON_IDENTIFIED'}</div>
+                                        <div className="text-[10px] font-mono font-bold text-[#3465B4]">{tx.cedula || 'NO_ID'}</div>
                                     </td>
-                                    <td className="py-4 px-4">
-                                        <span className={`text-[10px] font-black px-2 py-1 rounded border ${
-                                            tx.type === 'Canje' ? 'border-blue-200 bg-blue-50 text-blue-700' :
-                                            tx.type === 'Subasta' ? 'border-purple-200 bg-purple-50 text-purple-700' :
-                                            'border-gray-200 bg-gray-50 text-gray-700'
+                                    <td className="py-4 px-4 border-r border-gray-100">
+                                        <span className={`text-[10px] font-black px-2 py-0.5 border-2 ${
+                                            tx.type === 'Canje' ? 'border-blue-500 text-blue-600' :
+                                            tx.type === 'Subasta' ? 'border-purple-500 text-purple-600' :
+                                            'border-black text-black'
                                         }`}>
                                             {tx.type?.toUpperCase()}
                                         </span>
                                     </td>
-                                    <td className="py-4 px-4 text-xs text-gray-600 max-w-xs">
-                                        <p className="truncate" title={tx.description}>{tx.description || 'Sin detalles'}</p>
+                                    <td className="py-4 px-4 text-[11px] text-gray-600 max-w-xs border-r border-gray-100 font-medium italic">
+                                        "{tx.description || 'Sin bitácora adicional'}"
                                     </td>
-                                    <td className={`py-4 px-4 text-right font-mono font-bold text-sm ${String(tx.amount).startsWith('-') ? 'text-[#C62B34]' : 'text-green-600'}`}>
+                                    <td className={`py-4 px-4 text-right font-mono font-black text-sm ${String(tx.amount).startsWith('-') ? 'text-[#C62B34]' : 'text-green-700'}`}>
                                         {formatAmount(tx.amount)}
                                     </td>
                                     <td className="py-4 px-4 text-center">
-                                        <span className={`inline-block w-24 py-1 rounded text-[10px] font-black uppercase tracking-tighter ${
-                                            tx.status === 'Aprobado' ? 'bg-green-100 text-green-800' : 
-                                            tx.status === 'Pendiente' ? 'bg-yellow-100 text-yellow-800 animate-pulse' : 
-                                            'bg-red-100 text-red-800'
+                                        <span className={`inline-block w-24 py-1 text-[10px] font-black uppercase border ${
+                                            tx.status === 'Aprobado' ? 'bg-green-600 text-white border-green-700' : 
+                                            tx.status === 'Pendiente' ? 'bg-yellow-400 text-black border-yellow-500 animate-pulse' : 
+                                            'bg-red-600 text-white border-red-700'
                                         }`}>
-                                            {tx.status}
+                                            {tx.status === 'Aprobado' ? 'ASEGURADO' : tx.status === 'Pendiente' ? 'EN_ESPERA' : 'FALLIDO'}
                                         </span>
                                     </td>
                                 </tr>
@@ -277,10 +284,14 @@ const AdminTransactionHistory = () => {
                 </table>
             </div>
 
-            {/* Footer de Tabla */}
-            <div className="mt-6 flex flex-col sm:flex-row justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                <span>Total de entradas en base de datos: {transactions.length}</span>
-                <span>Visualizando: {filteredTransactions.length} registros</span>
+            {/* BARRA DE ESTADO INFERIOR */}
+            <div className="mt-6 flex flex-col sm:flex-row justify-between items-center bg-black p-2 text-[10px] font-mono font-bold text-white uppercase tracking-tighter">
+                <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-ping"></span>
+                    Terminal_Link: Establecido
+                </span>
+                <span>Entradas_Totales: {transactions.length} | Filtradas: {filteredTransactions.length}</span>
+                <span className="hidden md:block">Acceso_Autorizado: [ADMIN_O5]</span>
             </div>
 
             {showToast && <Toast message={toastMsg} onClose={() => setShowToast(false)} />}
