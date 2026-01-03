@@ -94,7 +94,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('asignar')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'asignar' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Registro de Personal
+                            Terminal de registro
                         </button>
                     </li>
                     <li>
@@ -102,7 +102,7 @@ function AdminPage() {
                             onClick={() => setActiveTab('registros')}
                             className={`w-full text-left px-4 py-2 rounded-lg transition-all font-medium ${activeTab === 'registros' ? 'bg-red-900 text-red-300 shadow' : 'text-gray-300 hover:bg-gray-800 hover:text-red-400'}`}
                         >
-                            Solicitudes de Acceso Nivel 1
+                            Terminal de auditoría
                         </button>
                     </li>
                     <li>
