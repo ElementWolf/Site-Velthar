@@ -30,13 +30,16 @@ const Header = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        console.log('Búsqueda:', searchQuery);
+        console.log('Búsqueda ejecutada:', searchQuery);
+        setMenuOpen(false);
     };
 
     return (
         <header className={`bg-gray-900 border-b-2 border-black w-full z-30 fixed top-0 left-0 transition-transform duration-300 ${show ? 'translate-y-0' : '-translate-y-full'}`} style={{willChange:'transform'}}>
+            {/* Top Bar */}
             <div className="border-b border-gray-700">
                 <div className="container mx-auto px-4 py-1 flex justify-between items-center">
+                    {/* Logo and Title */}
                     <div onClick={() => router.push(routesDictionary.index)} className="cursor-pointer flex items-center space-x-3">
                         <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center border-2 border-black">
                             <Image src={"/logo.png"} width={40} height={40} alt='SCP Logo' className="rounded-full" />
@@ -47,6 +50,7 @@ const Header = () => {
                         </div>
                     </div>
 
+                    {/* Search Desktop & Auth */}
                     <div className="flex items-center space-x-4">
                         <form onSubmit={handleSearch} className="hidden md:flex items-center space-x-2">
                             <input
@@ -79,15 +83,17 @@ const Header = () => {
                             )}
                         </div>
 
+                        {/* Botón Menú Móvil */}
                         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden w-10 h-10 flex items-center justify-center bg-gray-800 border border-gray-700 text-white">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
                             </svg>
                         </button>
                     </div>
                 </div>
             </div>
 
+            {/* Navigation Bar */}
             <nav className="bg-gray-800 border-b border-gray-700">
                 <div className="container mx-auto px-4">
                     <ul className="hidden md:flex space-x-1">
@@ -100,11 +106,29 @@ const Header = () => {
                         </li>
                     </ul>
 
+                    {/* Menú Móvil con Buscador */}
                     {menuOpen && (
-                        <div className="md:hidden py-4 text-center">
-                            <span className="text-red-600 font-bold text-xs uppercase tracking-tighter">
-                                [CONTENIDO BAJO PROTOCOLO DE CENSURA]
-                            </span>
+                        <div className="md:hidden py-4 px-2 space-y-4">
+                            <form onSubmit={handleSearch} className="flex flex-col space-y-2">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Buscar en archivos..."
+                                    className="w-full px-4 py-2 bg-gray-900 border border-gray-600 text-white text-sm focus:outline-none"
+                                />
+                                <button
+                                    type="submit"
+                                    className="w-full py-2 bg-amber-700 text-white font-bold text-sm border border-black uppercase tracking-widest"
+                                >
+                                    Ejecutar Búsqueda
+                                </button>
+                            </form>
+                            <div className="text-center pt-2 border-t border-gray-700">
+                                <span className="text-red-600 font-bold text-xs uppercase tracking-tighter block">
+                                    [CONTENIDO BAJO PROTOCOLO DE CENSURA]
+                                </span>
+                            </div>
                         </div>
                     )}
                 </div>
