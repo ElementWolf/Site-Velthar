@@ -154,7 +154,7 @@ const Header = () => {
 
                                     >
 
-                                        Iniciar sesión
+                                        Acceso
 
                                     </button>
 
