@@ -13,8 +13,8 @@ export async function GET(request) {
                 success: true, 
                 user: {
                     id: process.env.ADMIN_USERNAME,
-                    firstName: "Prof.",
-                    lastName: "Merlyn",
+                    firstName: "Agente",
+                    lastName: "████",
                     points: 0,
                     type: "admin"
                 } 
