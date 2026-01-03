@@ -6,7 +6,7 @@ import { routesDictionary } from '@/routesDictionary';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-const Header = () => {
+export default function Header() {
     const router = useRouter();
     const { user, logOut } = useAuth();
     const [show, setShow] = useState(true);
@@ -28,32 +28,21 @@ const Header = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Cambiado a un tipado más flexible para evitar errores de compilación
-    const handleSearch = (e: any) => {
+    const handleSearch = (e) => {
         e.preventDefault();
         console.log('Búsqueda:', searchQuery);
     };
 
     return (
         <header 
-            className={`bg-gray-900 border-b-4 border-black w-full z-50 fixed top-0 left-0 transition-transform duration-300 ${show ? 'translate-y-0' : '-translate-y-full'}`} 
-            style={{ willChange: 'transform' }}
+            className={`bg-gray-900 border-b-4 border-black w-full z-50 fixed top-0 left-0 transition-transform duration-300 ${show ? 'translate-y-0' : '-translate-y-full'}`}
         >
             <div className="border-b border-gray-700">
                 <div className="container mx-auto px-4 py-2 flex justify-between items-center">
                     
-                    <div 
-                        onClick={() => router.push(routesDictionary.index)} 
-                        className="cursor-pointer flex items-center space-x-3 group"
-                    >
+                    <div onClick={() => router.push(routesDictionary.index)} className="cursor-pointer flex items-center space-x-3 group">
                         <div className="relative w-10 h-10 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center border-2 border-black shrink-0">
-                            <Image 
-                                src="/logo.png" 
-                                width={40} 
-                                height={40} 
-                                alt='SCP Logo' 
-                                className="rounded-full"
-                            />
+                            <Image src="/logo.png" width={40} height={40} alt='SCP Logo' className="rounded-full" />
                         </div>
                         <div>
                             <h1 className="text-white font-bold text-base md:text-xl leading-tight">Velthar SCP</h1>
@@ -70,20 +59,14 @@ const Header = () => {
                                 placeholder="Buscar archivo..."
                                 className="px-3 py-1 bg-gray-800 border border-gray-700 text-white text-sm focus:outline-none focus:border-gray-500"
                             />
-                            <button
-                                type="submit"
-                                className="px-4 py-1 bg-amber-700 hover:bg-amber-600 text-white font-black text-sm border border-black transition-colors uppercase"
-                            >
+                            <button type="submit" className="px-4 py-1 bg-amber-700 hover:bg-amber-600 text-white font-black text-sm border border-black transition-colors uppercase">
                                 Buscar
                             </button>
                         </form>
 
                         <div className="flex items-center space-x-2 text-xs md:text-sm font-bold">
                             {!user ? (
-                                <button
-                                    onClick={() => router.push(routesDictionary.login)}
-                                    className="text-white hover:text-gray-400 transition-colors uppercase tracking-widest"
-                                >
+                                <button onClick={() => router.push(routesDictionary.login)} className="text-white hover:text-gray-400 uppercase tracking-widest">
                                     Acceder
                                 </button>
                             ) : (
@@ -91,20 +74,14 @@ const Header = () => {
                                     <span className="text-white hidden sm:inline border-l border-gray-700 pl-3">
                                         Agente: {user.firstName}
                                     </span>
-                                    <button
-                                        onClick={() => logOut()}
-                                        className="text-red-600 hover:text-red-500 transition-colors uppercase"
-                                    >
+                                    <button onClick={() => logOut()} className="text-red-600 hover:text-red-500 uppercase">
                                         [ Salir ]
                                     </button>
                                 </div>
                             )}
                         </div>
 
-                        <button
-                            onClick={() => setMenuOpen(!menuOpen)}
-                            className="md:hidden w-9 h-9 flex items-center justify-center bg-gray-800 border border-gray-700 text-white"
-                        >
+                        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden w-9 h-9 flex items-center justify-center bg-gray-800 border border-gray-700 text-white">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 {menuOpen ? (
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -127,17 +104,6 @@ const Header = () => {
                     </ul>
                 </div>
             </nav>
-
-            {menuOpen && (
-                <div className="md:hidden bg-gray-900 border-b-4 border-black">
-                    <a href="#about" onClick={() => setMenuOpen(false)} className="block px-6 py-4 text-white border-b border-gray-800 font-bold uppercase text-sm">Acerca de</a>
-                    <a href="#community" onClick={() => setMenuOpen(false)} className="block px-6 py-4 text-white border-b border-gray-800 font-bold uppercase text-sm">Comunidad</a>
-                    <a href="#resources" onClick={() => setMenuOpen(false)} className="block px-6 py-4 text-white border-b border-gray-800 font-bold uppercase text-sm">Recursos</a>
-                    <a href="#contact" onClick={() => setMenuOpen(false)} className="block px-6 py-4 text-white font-bold uppercase text-sm">Contacto</a>
-                </div>
-            )}
         </header>
     );
-};
-
-export default Header;
+}
