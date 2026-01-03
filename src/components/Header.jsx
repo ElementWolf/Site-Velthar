@@ -75,9 +75,11 @@ const Header = () => {
                                 </button>
                             ) : (
                                 <div className="flex items-center space-x-3">
-                                    <span className="text-white">{user.firstName} {user.lastName}</span>
-                                    <button onClick={() => logOut()} className="text-white hover:text-gray-300 transition-colors">
-                                        Salir
+                                    <span className="text-white font-mono text-xs bg-gray-800 px-2 py-1 border border-gray-700">
+                                        USR: {user.firstName?.toUpperCase()}
+                                    </span>
+                                    <button onClick={() => logOut()} className="text-red-400 hover:text-red-300 transition-colors font-bold uppercase text-xs">
+                                        [ Finalizar Sesión ]
                                     </button>
                                 </div>
                             )}
@@ -93,46 +95,48 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* Navigation Bar */}
-            <nav className="bg-gray-800 border-b border-gray-700">
-                <div className="container mx-auto px-4">
-                    <ul className="hidden md:flex space-x-1">
-                        <li className="flex items-center space-x-4 px-4 py-3 text-red-600 font-mono text-sm font-bold uppercase tracking-widest select-none">
-                            <span>Acceso Denegado:</span>
-                            <span className="bg-black text-black px-2 cursor-not-allowed">█████████</span>
-                            <span className="bg-black text-black px-2 cursor-not-allowed">███████████</span>
-                            <span className="bg-black text-black px-2 cursor-not-allowed">████████</span>
-                            <span className="text-gray-500 animate-pulse text-[10px] ml-4 font-normal">[NIVEL O5 REQUERIDO]</span>
-                        </li>
-                    </ul>
+            {/* Navigation Bar - SOLO SE MUESTRA SI NO HAY USUARIO */}
+            {!user && (
+                <nav className="bg-gray-800 border-b border-gray-700">
+                    <div className="container mx-auto px-4">
+                        <ul className="hidden md:flex space-x-1">
+                            <li className="flex items-center space-x-4 px-4 py-3 text-red-600 font-mono text-sm font-bold uppercase tracking-widest select-none">
+                                <span>Acceso Denegado:</span>
+                                <span className="bg-black text-black px-2 cursor-not-allowed">█████████</span>
+                                <span className="bg-black text-black px-2 cursor-not-allowed">███████████</span>
+                                <span className="bg-black text-black px-2 cursor-not-allowed">████████</span>
+                                <span className="text-gray-500 animate-pulse text-[10px] ml-4 font-normal">[NIVEL O5 REQUERIDO]</span>
+                            </li>
+                        </ul>
 
-                    {/* Menú Móvil con Buscador */}
-                    {menuOpen && (
-                        <div className="md:hidden py-4 px-2 space-y-4">
-                            <form onSubmit={handleSearch} className="flex flex-col space-y-2">
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Buscar en archivos..."
-                                    className="w-full px-4 py-2 bg-gray-900 border border-gray-600 text-white text-sm focus:outline-none"
-                                />
-                                <button
-                                    type="submit"
-                                    className="w-full py-2 bg-amber-700 text-white font-bold text-sm border border-black uppercase tracking-widest"
-                                >
-                                    Ejecutar Búsqueda
-                                </button>
-                            </form>
-                            <div className="text-center pt-2 border-t border-gray-700">
-                                <span className="text-red-600 font-bold text-xs uppercase tracking-tighter block">
-                                    [CONTENIDO BAJO PROTOCOLO DE CENSURA]
-                                </span>
+                        {/* Menú Móvil con Buscador y Censura */}
+                        {menuOpen && (
+                            <div className="md:hidden py-4 px-2 space-y-4">
+                                <form onSubmit={handleSearch} className="flex flex-col space-y-2">
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Buscar en archivos..."
+                                        className="w-full px-4 py-2 bg-gray-900 border border-gray-600 text-white text-sm focus:outline-none"
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="w-full py-2 bg-amber-700 text-white font-bold text-sm border border-black uppercase tracking-widest"
+                                    >
+                                        Ejecutar Búsqueda
+                                    </button>
+                                </form>
+                                <div className="text-center pt-2 border-t border-gray-700">
+                                    <span className="text-red-600 font-bold text-xs uppercase tracking-tighter block">
+                                        [CONTENIDO BAJO PROTOCOLO DE CENSURA]
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </div>
-            </nav>
+                        )}
+                    </div>
+                </nav>
+            )}
         </header>
     );
 };
