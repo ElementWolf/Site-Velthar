@@ -90,9 +90,9 @@ const Header = () => {
 
                         <div>
 
-                            <h1 className="text-white font-bold text-lg md:text-xl leading-tight">Velthar SCP</h1>
+                            <h1 className="text-white font-bold text-lg md:text-xl leading-tight">SITE-VELTHAR</h1>
 
-                            <p className="text-gray-300 text-xs md:text-sm">Secure, Contain, Protect</p>
+                            <p className="text-gray-300 text-xs md:text-sm">SECURE, CONTAIN, PROTECT</p>
 
                         </div>
 
