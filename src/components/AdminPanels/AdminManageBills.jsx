@@ -7,7 +7,9 @@ const AdminManageBills = () => {
         firstName: '',
         lastName: '',
         id: '',
-        password: ''
+        password: '',
+        accessLevel: '', // Nuevo campo
+        department: ''   // Nuevo campo
     });
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
@@ -22,8 +24,10 @@ const AdminManageBills = () => {
         setErrorMsg('');
         setSuccessMsg('');
         
-        if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.id.trim() || !formData.password.trim()) {
-            setErrorMsg('Todos los campos son obligatorios.');
+        // Validación de campos obligatorios (incluyendo los nuevos)
+        if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.id.trim() || 
+            !formData.password.trim() || !formData.accessLevel || !formData.department) {
+            setErrorMsg('Todos los campos son obligatorios, incluyendo nivel y departamento.');
             return;
         }
         
@@ -44,23 +48,32 @@ const AdminManageBills = () => {
                 id: formData.id.trim(),
                 firstName: formData.firstName.trim(),
                 lastName: formData.lastName.trim(),
-                password: formData.password
+                password: formData.password,
+                role: formData.accessLevel, // Enviando nivel como rol
+                department: formData.department // Enviando departamento
             }, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
-            setFormData({ firstName: '', lastName: '', id: '', password: '' });
+            // Limpiar formulario
+            setFormData({ 
+                firstName: '', 
+                lastName: '', 
+                id: '', 
+                password: '', 
+                accessLevel: '', 
+                department: '' 
+            });
             setSuccessMsg('Agente registrado exitosamente en la Base de Datos de la Fundación.');
         } catch (e) {
-            const errorMessage = e.response?.data?.message || 'Error al registrar estudiante.';
+            const errorMessage = e.response?.data?.message || 'Error al registrar agente.';
             setErrorMsg(errorMessage);
         } finally {
             setSubmitting(false);
         }
     };
 
-    // Clase común para todos los inputs para asegurar visibilidad
-    const inputStyle = "w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white text-gray-900 placeholder-gray-400";
+    const inputStyle = "w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white text-gray-900 placeholder-gray-400 appearance-none";
 
     return (
         <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-6 animate-slide-up-fade">
@@ -90,6 +103,7 @@ const AdminManageBills = () => {
                     Credenciales del Nuevo Agente
                 </h3>
                 
+                {/* Nombre y Apellido */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="text-left">
                         <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Nombre</label>
@@ -116,6 +130,7 @@ const AdminManageBills = () => {
                     </div>
                 </div>
                 
+                {/* ID y Password */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="text-left">
                         <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Identificación</label>
@@ -139,6 +154,51 @@ const AdminManageBills = () => {
                             className={inputStyle}
                             placeholder="••••••••"
                         />
+                    </div>
+                </div>
+
+                {/* NUEVOS INPUTS: Nivel de Acceso y Departamento */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="text-left">
+                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Nivel de Acceso</label>
+                        <select
+                            name="accessLevel"
+                            value={formData.accessLevel}
+                            onChange={handleInputChange}
+                            className={inputStyle}
+                        >
+                            <option value="">Seleccionar Nivel...</option>
+                            <option value="1">Nivel 1 (Personal de Clase D)</option>
+                            <option value="2">Nivel 2 (Investigador Jr)</option>
+                            <option value="3">Nivel 3 (Agente de Campo)</option>
+                            <option value="4">Nivel 4 (Director de Sitio)</option>
+                            <option value="5">Nivel 5 (Consejo O5)</option>
+                        </select>
+                    </div>
+                    
+                    <div className="text-left">
+                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Departamento / Rol</label>
+                        <select
+                            name="department"
+                            value={formData.department}
+                            onChange={handleInputChange}
+                            className={inputStyle}
+                        >
+                            <option value="">Seleccionar Área...</option>
+                            <optgroup label="Operaciones">
+                                <option value="logistica">Logística / Gois</option>
+                                <option value="seguridad">Seguridad Interna</option>
+                                <option value="contencion">Equipos de Contención</option>
+                            </optgroup>
+                            <optgroup label="Científico">
+                                <option value="investigacion">Investigación y Desarrollo</option>
+                                <option value="medico">Departamento Médico</option>
+                            </optgroup>
+                            <optgroup label="Administrativo">
+                                <option value="rrhh">Recursos Humanos</option>
+                                <option value="it">Sistemas / IT</option>
+                            </optgroup>
+                        </select>
                     </div>
                 </div>
                 
