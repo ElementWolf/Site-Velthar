@@ -12,9 +12,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black overflow-x-hidden">
       {/* Main Content Area */}
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex flex-col lg:flex-row w-full">
         {/* Left and Center Content */}
-        <div className="flex-1 pb-8 px-2 sm:px-4 lg:px-12">
+        {/* El uso de min-w-0 evita que el contenido ancho empuje la barra lateral hacia afuera */}
+        <div className="flex-1 min-w-0 pb-8 px-4 sm:px-6 lg:px-12">
           <div className="max-w-5xl mx-auto">
             {/* Warning Banner */}
             <div className="relative bg-black border-4 border-black mb-10 p-6 sm:p-8 md:p-10 lg:p-16 text-center shadow-lg">
@@ -64,14 +65,15 @@ export default function Home() {
         </div>
 
         {/* Right Sidebar */}
-        <aside className="w-full lg:w-96 bg-gray-900 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-6 sm:p-8 lg:p-10">
+        {/* shrink-0 asegura que la barra mantenga su ancho y no se comprima */}
+        <aside className="w-full lg:w-80 xl:w-96 shrink-0 bg-gray-900 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-6 sm:p-8 lg:p-10">
           <div className="space-y-10">
             {/* Get Started Section */}
             <div>
               <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">
                 Comenzar
               </h2>
-              <p className="text-gray-300 leading-relaxed text-base text-center">
+              <p className="text-gray-300 leading-relaxed text-base">
                 Revisa nuestra{' '}
                 <a href="#guide" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
                   Guía para Nuevos
@@ -89,7 +91,7 @@ export default function Home() {
               <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">
                 Únete a la Wiki
               </h2>
-              <p className="text-gray-300 leading-relaxed text-base text-center">
+              <p className="text-gray-300 leading-relaxed text-base">
                 Lee las{' '}
                 <a href="#rules" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
                   Reglas del Sitio
