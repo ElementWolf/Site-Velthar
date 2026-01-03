@@ -8,347 +8,197 @@ const formatDate = (date) => {
     try {
         return new Date(date).toLocaleString('es-ES');
     } catch (error) {
-        return 'Fecha inválida';
+        return 'FECHA_CORRUPTA';
     }
 };
 
-const AdminRegistrationRequests = () => {
-    const { data, loading, error, refetch } = useApi('/api/admin/registration-requests');
+const AdminActivityLogs = () => {
+    // Cambiamos el endpoint a uno de logs/auditoría
+    const { data, loading, error, refetch } = useApi('/api/admin/system-logs');
     const { showToast } = useToast();
-    const requests = data?.requests || [];
+    const logs = data?.logs || [];
     
-    // Estados para filtros
     const [filters, setFilters] = useState({
-        status: '',
-        student: '',
+        level: '', // Nivel de alerta (Info, Warning, Critical)
+        agent: '',
         dateFrom: '',
         dateTo: ''
     });
 
-    // Estados para modal de revisión
-    const [selectedRequest, setSelectedRequest] = useState(null);
-    const [reviewNotes, setReviewNotes] = useState('');
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [selectedLog, setSelectedLog] = useState(null);
 
-    // Filtrar solicitudes
-    const filteredRequests = useMemo(() => {
-        return requests.filter(req => {
-            // Filtro por estado
-            if (filters.status && req.status !== filters.status) return false;
+    // Filtrar Logs con temática SCP
+    const filteredLogs = useMemo(() => {
+        return logs.filter(log => {
+            if (filters.level && log.level !== filters.level) return false;
             
-            // Filtro por estudiante
-            if (filters.student) {
-                const fullName = `${req.firstName} ${req.lastName}`.toLowerCase();
-                if (!fullName.includes(filters.student.toLowerCase())) return false;
+            if (filters.agent) {
+                const agentName = `${log.agentName} ${log.agentId}`.toLowerCase();
+                if (!agentName.includes(filters.agent.toLowerCase())) return false;
             }
             
-            // Filtro por fecha desde
             if (filters.dateFrom) {
-                const reqDate = new Date(req.date);
-                const fromDate = new Date(filters.dateFrom);
-                if (reqDate < fromDate) return false;
-            }
-            
-            // Filtro por fecha hasta
-            if (filters.dateTo) {
-                const reqDate = new Date(req.date);
-                const toDate = new Date(filters.dateTo);
-                toDate.setHours(23, 59, 59, 999);
-                if (reqDate > toDate) return false;
+                const logDate = new Date(log.date);
+                if (logDate < new Date(filters.dateFrom)) return false;
             }
             
             return true;
         });
-    }, [requests, filters]);
-
-    // Obtener valores únicos para los filtros
-    const uniqueStatuses = useMemo(() => {
-        const statuses = [...new Set(requests.map(req => req.status).filter(Boolean))];
-        return statuses.sort();
-    }, [requests]);
+    }, [logs, filters]);
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
     };
 
     const clearFilters = () => {
-        setFilters({
-            status: '',
-            student: '',
-            dateFrom: '',
-            dateTo: ''
-        });
-    };
-
-    const openReviewModal = (request) => {
-        setSelectedRequest(request);
-        setReviewNotes('');
-    };
-
-    const closeReviewModal = () => {
-        setSelectedRequest(null);
-        setReviewNotes('');
-    };
-
-    const handleReview = async (status) => {
-        if (!selectedRequest) return;
-        
-        setIsProcessing(true);
-        try {
-            const response = await api.post('/api/admin/registration-requests', {
-                requestId: selectedRequest.id,
-                status,
-                reviewNotes: reviewNotes.trim() || null
-            });
-
-            const result = response.data;
-            
-            if (result.success) {
-                showToast(result.message, 'success');
-                closeReviewModal();
-                refetch(); // Recargar datos
-            } else {
-                showToast(result.error || 'Error al procesar la solicitud', 'error');
-            }
-        } catch (error) {
-            console.error('Error reviewing request:', error);
-            showToast('Error de conexión', 'error');
-        } finally {
-            setIsProcessing(false);
-        }
+        setFilters({ level: '', agent: '', dateFrom: '', dateTo: '' });
     };
 
     if (loading) return <LoadingSpinner />;
 
     return (
-        <div className="bg-white border border-[#F3F4F6] rounded-2xl shadow-lg p-4 sm:p-8 animate-slide-up-fade">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#C62B34] mb-6">Solicitudes de Registro</h2>
-            {error && <div className="mb-4 bg-[#F8D7DA] text-[#C62B34] border border-[#C62B34] font-medium rounded-lg px-3 py-2 text-sm sm:text-base">{error}</div>}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-4 sm:p-8 animate-slide-up-fade">
+            {/* Header Estilo SCP */}
+            <div className="border-b-2 border-[#C62B34] pb-4 mb-6">
+                <h2 className="text-xl sm:text-2xl font-black text-[#C62B34] uppercase tracking-tighter">
+                    Terminal de Auditoría SCiP-NET
+                </h2>
+                <p className="text-gray-500 text-xs font-mono italic">Monitoreo de Acceso y Modificaciones de Archivos</p>
+            </div>
+
+            {error && (
+                <div className="mb-4 bg-red-50 text-[#C62B34] border-l-4 border-[#C62B34] font-mono p-3 text-sm">
+                    [ERROR_DE_SISTEMA]: {error}
+                </div>
+            )}
             
-            {/* Filtros */}
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold text-[#3465B4] mb-4">Filtros</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {/* Filtro por estado */}
+            {/* Panel de Filtros */}
+            <div className="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <h3 className="text-xs font-bold text-gray-500 mb-4 uppercase tracking-widest">Parámetros de Búsqueda</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Estado</label>
+                        <label className="block text-[10px] font-bold text-[#C62B34] uppercase mb-1">Nivel de Alerta</label>
                         <select
-                            value={filters.status}
-                            onChange={(e) => handleFilterChange('status', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            value={filters.level}
+                            onChange={(e) => handleFilterChange('level', e.target.value)}
+                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:border-[#C62B34] outline-none"
                         >
-                            <option value="">Todos los estados</option>
-                            {uniqueStatuses.map(status => (
-                                <option key={status} value={status}>{status}</option>
-                            ))}
+                            <option value="">TODOS</option>
+                            <option value="INFO">INFO (Acceso)</option>
+                            <option value="WARN">WARN (Modificación)</option>
+                            <option value="CRIT">CRIT (Eliminación)</option>
                         </select>
                     </div>
 
-                    {/* Filtro por estudiante */}
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Estudiante</label>
+                        <label className="block text-[10px] font-bold text-[#C62B34] uppercase mb-1">Agente / ID</label>
                         <input
                             type="text"
-                            placeholder="Buscar estudiante..."
-                            value={filters.student}
-                            onChange={(e) => handleFilterChange('student', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            placeholder="Buscar sujeto..."
+                            value={filters.agent}
+                            onChange={(e) => handleFilterChange('agent', e.target.value)}
+                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:border-[#C62B34] outline-none"
                         />
                     </div>
 
-                    {/* Filtro por fecha desde */}
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Desde</label>
+                        <label className="block text-[10px] font-bold text-[#C62B34] uppercase mb-1">Fecha Inicial</label>
                         <input
                             type="date"
                             value={filters.dateFrom}
                             onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm font-mono"
                         />
                     </div>
 
-                    {/* Botón limpiar filtros */}
                     <div className="flex items-end">
                         <button
                             onClick={clearFilters}
-                            className="w-full bg-gradient-to-r from-[#3465B4] to-[#2a4f8f] hover:from-[#2a4f8f] hover:to-[#1e3a6b] text-white font-bold px-4 py-2 rounded-lg transition-all shadow active:scale-95 text-sm"
+                            className="w-full bg-gray-800 hover:bg-black text-white font-bold py-2 rounded-lg transition-all text-xs uppercase tracking-widest"
                         >
-                            Limpiar Filtros
+                            Resetear Terminal
                         </button>
                     </div>
                 </div>
-
-                {/* Resumen de filtros activos */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                    {Object.entries(filters).map(([key, value]) => {
-                        if (!value) return null;
-                        return (
-                            <span key={key} className="inline-flex items-center bg-white text-[#C62B34] px-3 py-1 rounded-full text-xs font-bold border border-[#F3F4F6] shadow-sm">
-                                {key === 'status' && 'Estado: '}
-                                {key === 'student' && 'Estudiante: '}
-                                {key === 'dateFrom' && 'Desde: '}
-                                {key === 'dateTo' && 'Hasta: '}
-                                {value}
-                                <button
-                                    onClick={() => handleFilterChange(key, '')}
-                                    className="ml-2 text-[#C62B34] hover:text-[#a81e28] transition-colors"
-                                >
-                                    ×
-                                </button>
-                            </span>
-                        );
-                    })}
-                </div>
             </div>
             
-            <div className="overflow-x-auto -mx-4 sm:mx-0">
-                <div className="min-w-full inline-block align-middle">
-                    <div className="overflow-hidden">
-                        <table className="min-w-full divide-y divide-[#F3F4F6]">
-                            <thead className="bg-[#F8D7DA]">
-                                <tr>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Fecha</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Cédula</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Nombre</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Estado</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Revisado por</th>
-                                    <th className="py-3 px-2 sm:px-4 text-center text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Acciones</th>
+            {/* Tabla de Logs */}
+            <div className="overflow-x-auto border border-gray-200 rounded-xl shadow-inner bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-800 text-white font-mono text-[10px] uppercase tracking-widest">
+                        <tr>
+                            <th className="py-3 px-4 text-left">Timestamp</th>
+                            <th className="py-3 px-4 text-left">Personal</th>
+                            <th className="py-3 px-4 text-left">Acción Realizada</th>
+                            <th className="py-3 px-4 text-left">Nivel</th>
+                            <th className="py-3 px-4 text-center">Detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 font-mono text-xs">
+                        {filteredLogs.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" className="py-10 text-center text-gray-400 italic">No se registran anomalías en los registros.</td>
+                            </tr>
+                        ) : (
+                            filteredLogs.map((log, idx) => (
+                                <tr key={log.id || idx} className="hover:bg-red-50/50 transition-colors">
+                                    <td className="py-3 px-4 text-gray-600 whitespace-nowrap">{formatDate(log.date)}</td>
+                                    <td className="py-3 px-4">
+                                        <span className="font-bold text-gray-900">{log.agentName}</span>
+                                        <div className="text-[10px] text-gray-400">ID: {log.agentId}</div>
+                                    </td>
+                                    <td className="py-3 px-4 text-gray-700">{log.action}</td>
+                                    <td className="py-3 px-4">
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                            log.level === 'CRIT' ? 'bg-red-600 text-white animate-pulse' :
+                                            log.level === 'WARN' ? 'bg-yellow-400 text-black' :
+                                            'bg-blue-100 text-blue-800'
+                                        }`}>
+                                            {log.level}
+                                        </span>
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                        <button 
+                                            onClick={() => setSelectedLog(log)}
+                                            className="text-[#3465B4] hover:underline text-[10px] font-bold uppercase"
+                                        >
+                                            [VER_EXPEDIENTE]
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-[#F3F4F6]">
-                                {filteredRequests.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center text-gray-500 py-8 bg-[#F8D7DA]/30 border border-[#F3F4F6] rounded-xl text-sm">
-                                            {requests.length === 0 ? 'No hay solicitudes de registro.' : 'No se encontraron solicitudes con los filtros aplicados.'}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredRequests.map((req, idx) => (
-                                        <tr key={req.id || idx} className="hover:bg-[#F8D7DA]/20 transition-colors">
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 font-medium text-xs sm:text-sm whitespace-nowrap">
-                                                {formatDate(req.date)}
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 font-medium text-xs sm:text-sm whitespace-nowrap">
-                                                {req.userId}
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 font-medium text-xs sm:text-sm max-w-[9.375rem]">
-                                                <div className="truncate" title={`${req.firstName} ${req.lastName}`}>
-                                                    {req.firstName} {req.lastName}
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4">
-                                                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                                                    req.status === 'Aprobado' ? 'bg-green-100 text-green-800' :
-                                                    req.status === 'Rechazado' ? 'bg-red-100 text-red-800' :
-                                                    'bg-yellow-100 text-yellow-800'
-                                                }`}>
-                                                    {req.status}
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 text-xs sm:text-sm">
-                                                {req.reviewedBy ? (
-                                                    <div>
-                                                        <div className="font-medium">{req.reviewedBy}</div>
-                                                        <div className="text-xs text-gray-500">{formatDate(req.reviewedDate)}</div>
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-gray-400">-</span>
-                                                )}
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-center">
-                                                {req.status === 'Pendiente' ? (
-                                                    <button
-                                                        onClick={() => openReviewModal(req)}
-                                                        className="bg-gradient-to-r from-[#3465B4] to-[#2a4f8f] hover:from-[#2a4f8f] hover:to-[#1e3a6b] text-white font-bold px-3 py-1 rounded-lg transition-all shadow active:scale-95 text-xs"
-                                                    >
-                                                        Revisar
-                                                    </button>
-                                                ) : (
-                                                    <div className="text-xs text-gray-500">
-                                                        {req.reviewNotes && (
-                                                            <div className="max-w-[12.5rem] truncate" title={req.reviewNotes}>
-                                                                {req.reviewNotes}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            ))
+                        )}
+                    </tbody>
+                </table>
             </div>
-            
-            {filteredRequests.length > 0 && (
-                <div className="mt-4 text-xs sm:text-sm text-gray-500 text-center">
-                    Mostrando {filteredRequests.length} de {requests.length} solicitudes
-                </div>
-            )}
 
-            {/* Modal de revisión */}
-            {selectedRequest && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-                        <h3 className="text-lg font-bold text-[#C62B34] mb-4">
-                            Revisar Solicitud de Registro
-                        </h3>
+            {/* Modal de Detalles del Log */}
+            {selectedLog && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white border-t-8 border-[#C62B34] rounded-lg shadow-2xl max-w-lg w-full p-6 font-mono">
+                        <div className="flex justify-between items-start mb-6">
+                            <h3 className="text-lg font-black text-gray-900 uppercase">Detalle de Actividad SCiP</h3>
+                            <span className="bg-gray-100 px-2 py-1 text-[10px]">LOG_ID: {selectedLog.id}</span>
+                        </div>
                         
-                        <div className="mb-4">
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <span className="font-medium text-gray-700">Cédula:</span>
-                                    <div className="text-gray-900">{selectedRequest.userId}</div>
-                                </div>
-                                <div>
-                                    <span className="font-medium text-gray-700">Fecha:</span>
-                                    <div className="text-gray-900">{formatDate(selectedRequest.date)}</div>
-                                </div>
-                            </div>
-                            <div className="mt-3">
-                                <span className="font-medium text-gray-700">Nombre:</span>
-                                <div className="text-gray-900">{selectedRequest.firstName} {selectedRequest.lastName}</div>
+                        <div className="space-y-3 text-sm border-b border-gray-100 pb-4 mb-4">
+                            <p><span className="text-gray-400 font-bold uppercase text-[10px]">Sujeto:</span> {selectedLog.agentName} ({selectedLog.agentId})</p>
+                            <p><span className="text-gray-400 font-bold uppercase text-[10px]">Acción:</span> {selectedLog.action}</p>
+                            <p><span className="text-gray-400 font-bold uppercase text-[10px]">Ubicación IP:</span> {selectedLog.ipAddress || '192.168.X.X'}</p>
+                            <div className="mt-4">
+                                <span className="text-gray-400 font-bold uppercase text-[10px]">Metadatos de la Operación:</span>
+                                <pre className="bg-gray-900 text-green-500 p-3 rounded mt-2 text-xs overflow-x-auto">
+                                    {JSON.stringify(selectedLog.metadata || { status: "Success", target: "File_SCP_001" }, null, 2)}
+                                </pre>
                             </div>
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-[#C62B34] mb-2">
-                                Notas de revisión (opcional)
-                            </label>
-                            <textarea
-                                value={reviewNotes}
-                                onChange={(e) => setReviewNotes(e.target.value)}
-                                placeholder="Agregar comentarios sobre la decisión..."
-                                className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all resize-none"
-                                rows="3"
-                            />
-                        </div>
-
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => handleReview('Aprobado')}
-                                disabled={isProcessing}
-                                className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-lg transition-all shadow active:scale-95"
-                            >
-                                {isProcessing ? 'Procesando...' : 'Aprobar'}
-                            </button>
-                            <button
-                                onClick={() => handleReview('Rechazado')}
-                                disabled={isProcessing}
-                                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-lg transition-all shadow active:scale-95"
-                            >
-                                {isProcessing ? 'Procesando...' : 'Rechazar'}
-                            </button>
-                            <button
-                                onClick={closeReviewModal}
-                                disabled={isProcessing}
-                                className="flex-1 bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-lg transition-all shadow active:scale-95"
-                            >
-                                Cancelar
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => setSelectedLog(null)}
+                            className="w-full bg-[#C62B34] hover:bg-[#a81e28] text-white font-bold py-2 rounded uppercase text-xs tracking-widest transition-all"
+                        >
+                            Cerrar Expediente
+                        </button>
                     </div>
                 </div>
             )}
@@ -356,4 +206,4 @@ const AdminRegistrationRequests = () => {
     );
 };
 
-export default AdminRegistrationRequests; 
+export default AdminActivityLogs;
