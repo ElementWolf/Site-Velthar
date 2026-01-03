@@ -59,10 +59,13 @@ const AdminManageBills = () => {
         }
     };
 
+    // Clase común para todos los inputs para asegurar visibilidad
+    const inputStyle = "w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white text-gray-900 placeholder-gray-400";
+
     return (
         <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-6 animate-slide-up-fade">
-            {/* Header con acento rojo SCP */}
-            <div className="border-b-2 border-[#C62B34] pb-4 mb-6">
+            {/* Header */}
+            <div className="border-b-2 border-[#C62B34] pb-4 mb-6 text-left">
                 <h2 className="text-2xl font-black text-[#C62B34] uppercase tracking-tighter">
                     Terminal de Registro - Nivel de Acceso O5
                 </h2>
@@ -81,67 +84,67 @@ const AdminManageBills = () => {
                 </div>
             )}
 
-            {/* Registration Form - Fondo Gris Técnico */}
+            {/* Registration Form */}
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
-                <h3 className="text-md font-bold text-gray-700 mb-6 uppercase tracking-widest border-b border-gray-200 pb-2">
+                <h3 className="text-md font-bold text-gray-700 mb-6 uppercase tracking-widest border-b border-gray-200 pb-2 text-left">
                     Credenciales del Nuevo Agente
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label className="block text-gray-600 text-xs font-bold uppercase mb-2">Nombre</label>
+                    <div className="text-left">
+                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Nombre</label>
                         <input
                             type="text"
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleInputChange}
-                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white"
-                            placeholder="Nombre"
+                            className={inputStyle}
+                            placeholder="Nombre del Agente"
                         />
                     </div>
                     
-                    <div>
-                        <label className="block text-gray-600 text-xs font-bold uppercase mb-2">Apellido</label>
+                    <div className="text-left">
+                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Apellido</label>
                         <input
                             type="text"
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleInputChange}
-                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white"
-                            placeholder="Apellido"
+                            className={inputStyle}
+                            placeholder="Apellido del Agente"
                         />
                     </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label className="block text-gray-600 text-xs font-bold uppercase mb-2">Identificación</label>
+                    <div className="text-left">
+                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Identificación</label>
                         <input
                             type="text"
                             name="id"
                             value={formData.id}
                             onChange={handleInputChange}
-                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white font-mono"
+                            className={`${inputStyle} font-mono`}
                             placeholder="Ej: 80123456"
                         />
                     </div>
                     
-                    <div>
-                        <label className="block text-gray-600 text-xs font-bold uppercase mb-2">Contraseña</label>
+                    <div className="text-left">
+                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Contraseña</label>
                         <input
                             type="password"
                             name="password"
                             value={formData.password}
                             onChange={handleInputChange}
-                            className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white"
+                            className={inputStyle}
                             placeholder="••••••••"
                         />
                     </div>
                 </div>
                 
-                <div className="bg-slate-800 border-l-4 border-yellow-500 rounded-lg p-4">
+                <div className="bg-slate-800 border-l-4 border-yellow-500 rounded-lg p-4 text-left">
                     <p className="text-white text-[11px] font-mono leading-tight">
-                        <span className="text-yellow-400 font-bold">PROTOCOLO DE SEGURIDAD:</span> Asegúrese de que el nuevo agente haya obtenido su validación oficial por el consejo. Las credenciales creadas aquí deben ser manejadas con la máxima confidencialidad posible.
+                        <span className="text-yellow-400 font-bold">PROTOCOLO DE SEGURIDAD:</span> Asegúrese de que el nuevo agente haya obtenido su validación oficial. Las credenciales creadas aquí deben ser manejadas con la máxima confidencialidad.
                     </p>
                 </div>
             </div>
