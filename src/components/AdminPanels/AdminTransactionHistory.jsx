@@ -1,27 +1,47 @@
-import { useApi } from '@/hooks/useApi';
+import { useState, useEffect, useMemo } from 'react';
+import api from '@/axios';
 import LoadingSpinner from '../LoadingSpinner';
-import { useState, useMemo } from 'react';
+import Tooltip from '../Tooltip';
+import Toast from '../Toast';
+import { exportStudentsList } from '@/lib/csvExport'; // Reutilizamos la lógica de exportación
+
+/**
+ * COMPONENTE: AdminTransactionHistory
+ * Temática: Registro de Transferencia de Datos - Nivel de Seguridad 4
+ */
 
 const formatDate = (date) => {
+    if (!date) return 'Sin fecha';
     try {
-        return new Date(date).toLocaleString('es-ES');
+        return new Date(date).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     } catch (error) {
         return 'Fecha inválida';
     }
 };
 
 const formatAmount = (amount) => {
-    if (!amount) return '0 MB';
-    const cleanAmount = amount.replace(/^[+-]/, '');
-    const sign = amount.startsWith('-') ? '-' : '+';
+    if (amount === undefined || amount === null) return '0 MB';
+    const strAmount = String(amount);
+    const cleanAmount = strAmount.replace(/^[+-]/, '');
+    const sign = strAmount.startsWith('-') ? '-' : '+';
     return `${sign}${cleanAmount} MB`;
 };
 
 const AdminTransactionHistory = () => {
-    const { data, loading, error } = useApi('/api/admin/history');
-    const transactions = data?.history || [];
-    
-    // Estados para filtros
+    const [transactions, setTransactions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [showToast, setShowToast] = useState(false);
+    const [toastMsg, setToastMsg] = useState('');
+    const [isClient, setIsClient] = useState(false);
+
+    // Estados para filtros operativos
     const [filters, setFilters] = useState({
         type: '',
         student: '',
@@ -31,270 +51,239 @@ const AdminTransactionHistory = () => {
         dateTo: ''
     });
 
-    // Filtrar transacciones
+    useEffect(() => {
+        setIsClient(true);
+        fetchHistory();
+    }, []);
+
+    const fetchHistory = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const res = await api.get('/api/admin/history');
+            setTransactions(res.data.history || []);
+        } catch (err) {
+            setError('Error de conexión con la base de datos central de la Fundación.');
+            console.error('Fetch error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Lógica de filtrado en tiempo real
     const filteredTransactions = useMemo(() => {
         return transactions.filter(tx => {
-            // Filtro por tipo
             if (filters.type && tx.type !== filters.type) return false;
-            
-            // Filtro por estudiante
             if (filters.student && !tx.student?.toLowerCase().includes(filters.student.toLowerCase())) return false;
-            
-            // Filtro por cédula
             if (filters.cedula && !tx.cedula?.toLowerCase().includes(filters.cedula.toLowerCase())) return false;
-            
-            // Filtro por estado
             if (filters.status && tx.status !== filters.status) return false;
             
-            // Filtro por fecha desde
-            if (filters.dateFrom) {
-                const txDate = new Date(tx.date);
-                const fromDate = new Date(filters.dateFrom);
-                if (txDate < fromDate) return false;
-            }
-            
-            // Filtro por fecha hasta
+            const txDate = new Date(tx.date);
+            if (filters.dateFrom && txDate < new Date(filters.dateFrom)) return false;
             if (filters.dateTo) {
-                const txDate = new Date(tx.date);
                 const toDate = new Date(filters.dateTo);
-                toDate.setHours(23, 59, 59, 999); // Incluir todo el día
+                toDate.setHours(23, 59, 59, 999);
                 if (txDate > toDate) return false;
             }
-            
             return true;
         });
     }, [transactions, filters]);
 
-    // Obtener valores únicos para los filtros
-    const uniqueTypes = useMemo(() => {
-        const types = [...new Set(transactions.map(tx => tx.type).filter(Boolean))];
-        return types.sort();
-    }, [transactions]);
-
-    const uniqueStatuses = useMemo(() => {
-        const statuses = [...new Set(transactions.map(tx => tx.status).filter(Boolean))];
-        return statuses.sort();
-    }, [transactions]);
+    const uniqueTypes = useMemo(() => [...new Set(transactions.map(tx => tx.type).filter(Boolean))].sort(), [transactions]);
+    const uniqueStatuses = useMemo(() => [...new Set(transactions.map(tx => tx.status).filter(Boolean))].sort(), [transactions]);
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
     };
 
     const clearFilters = () => {
-        setFilters({
-            type: '',
-            student: '',
-            cedula: '',
-            status: '',
-            dateFrom: '',
-            dateTo: ''
-        });
+        setFilters({ type: '', student: '', cedula: '', status: '', dateFrom: '', dateTo: '' });
     };
 
-    if (loading) return <LoadingSpinner />;
+    const handleExport = () => {
+        if (filteredTransactions.length === 0) return;
+        exportStudentsList(filteredTransactions); // Asumiendo que la función es genérica para objetos
+        setToastMsg('Registro de transacciones exportado a terminal local.');
+        setShowToast(true);
+    };
+
+    if (!isClient || loading) return <LoadingSpinner />;
 
     return (
-        <div className="bg-white border border-[#F3F4F6] rounded-2xl shadow-lg p-4 sm:p-8 animate-slide-up-fade">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#C62B34] mb-6">Historial de Transacciones</h2>
-            {error && <div className="mb-4 bg-[#F8D7DA] text-[#C62B34] border border-[#C62B34] font-medium rounded-lg px-3 py-2 text-sm sm:text-base">{error}</div>}
-            
-            {/* Filtros */}
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold text-[#3465B4] mb-4">Filtros</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-3">
-                    {/* Filtro por tipo */}
+        <div className="bg-white border-2 border-[#F3F4F6] rounded-2xl shadow-xl p-4 sm:p-8 animate-slide-up-fade">
+            {/* Cabecera Estilo Fundación */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b-2 border-[#F8D7DA] pb-6">
+                <div>
+                    <h2 className="text-2xl sm:text-3xl font-black text-[#C62B34] tracking-tighter uppercase">
+                        Historial de Transacciones
+                    </h2>
+                    <p className="text-[#3465B4] text-xs font-mono font-bold mt-1">
+                        SISTEMA DE MONITOREO DE RECURSOS DIGITALES | NIVEL 4
+                    </p>
+                </div>
+                
+                <div className="flex gap-2">
+                    <Tooltip content="Exportar registros filtrados">
+                        <button
+                            onClick={handleExport}
+                            className="flex items-center gap-2 bg-white border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white font-bold px-4 py-2 rounded-lg transition-all shadow-sm active:scale-95 text-sm"
+                        >
+                            <span>📄</span> EXPORTAR CSV
+                        </button>
+                    </Tooltip>
+                    <button
+                        onClick={fetchHistory}
+                        className="bg-[#E3EAFD] text-[#3465B4] border-2 border-[#3465B4] font-bold p-2 rounded-lg hover:bg-[#3465B4] hover:text-white transition-all"
+                    >
+                        🔄
+                    </button>
+                </div>
+            </div>
+
+            {error && (
+                <div className="mb-6 bg-[#F8D7DA] text-[#C62B34] border-l-4 border-[#C62B34] font-bold p-4 text-sm animate-pulse">
+                    ⚠️ ALERTA: {error}
+                </div>
+            )}
+
+            {/* Panel de Filtros Operativos */}
+            <div className="bg-gray-50 rounded-xl p-5 mb-8 border border-gray-200">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Tipo</label>
+                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Clasificación</label>
                         <select
                             value={filters.type}
                             onChange={(e) => handleFilterChange('type', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none transition-colors"
                         >
-                            <option value="">Todos los tipos</option>
-                            {uniqueTypes.map(type => (
-                                <option key={type} value={type}>{type}</option>
-                            ))}
+                            <option value="">TODOS</option>
+                            {uniqueTypes.map(type => <option key={type} value={type}>{type}</option>)}
                         </select>
                     </div>
 
-                    {/* Filtro por estudiante */}
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Estudiante</label>
+                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Sujeto (Nombre)</label>
                         <input
                             type="text"
-                            placeholder="Buscar estudiante..."
+                            placeholder="Buscar..."
                             value={filters.student}
                             onChange={(e) => handleFilterChange('student', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none"
                         />
                     </div>
 
-                    {/* Filtro por cédula */}
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Cédula</label>
+                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Identificación</label>
                         <input
                             type="text"
-                            placeholder="Buscar cédula..."
+                            placeholder="V-..."
                             value={filters.cedula}
                             onChange={(e) => handleFilterChange('cedula', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none"
                         />
                     </div>
 
-                    {/* Filtro por estado */}
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Estado</label>
+                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Estado de Transacción</label>
                         <select
                             value={filters.status}
                             onChange={(e) => handleFilterChange('status', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm focus:border-[#3465B4] outline-none"
                         >
-                            <option value="">Todos los estados</option>
-                            {uniqueStatuses.map(status => (
-                                <option key={status} value={status}>{status}</option>
-                            ))}
+                            <option value="">TODOS</option>
+                            {uniqueStatuses.map(status => <option key={status} value={status}>{status}</option>)}
                         </select>
                     </div>
 
-                    {/* Filtro por fecha desde */}
                     <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Desde</label>
+                        <label className="block text-[10px] font-black text-[#C62B34] uppercase mb-1">Rango Temporal</label>
                         <input
                             type="date"
                             value={filters.dateFrom}
                             onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
+                            className="w-full border-2 border-gray-200 rounded-md px-2 py-1.5 text-sm"
                         />
                     </div>
 
-                    {/* Filtro por fecha hasta */}
-                    <div>
-                        <label className="block text-sm font-medium text-[#C62B34] mb-1">Hasta</label>
-                        <input
-                            type="date"
-                            value={filters.dateTo}
-                            onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#C62B34] transition-all"
-                        />
-                    </div>
-
-                    {/* Botón limpiar filtros */}
                     <div className="flex items-end">
                         <button
                             onClick={clearFilters}
-                            className="w-full bg-gradient-to-r from-[#3465B4] to-[#2a4f8f] hover:from-[#2a4f8f] hover:to-[#1e3a6b] text-white font-bold px-4 py-2 rounded-lg transition-all shadow active:scale-95 text-sm"
+                            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 rounded-md transition-all text-xs uppercase"
                         >
-                            Limpiar Filtros
+                            Reiniciar
                         </button>
                     </div>
                 </div>
+            </div>
 
-                {/* Resumen de filtros activos */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                    {Object.entries(filters).map(([key, value]) => {
-                        if (!value) return null;
-                        return (
-                            <span key={key} className="inline-flex items-center bg-white text-[#C62B34] px-3 py-1 rounded-full text-xs font-bold border border-[#F3F4F6] shadow-sm">
-                                {key === 'type' && 'Tipo: '}
-                                {key === 'student' && 'Estudiante: '}
-                                {key === 'cedula' && 'Cédula: '}
-                                {key === 'status' && 'Estado: '}
-                                {key === 'dateFrom' && 'Desde: '}
-                                {key === 'dateTo' && 'Hasta: '}
-                                {value}
-                                <button
-                                    onClick={() => handleFilterChange(key, '')}
-                                    className="ml-2 text-[#C62B34] hover:text-[#a81e28] transition-colors"
-                                >
-                                    ×
-                                </button>
-                            </span>
-                        );
-                    })}
-                </div>
-            </div>
-            
-            <div className="overflow-x-auto -mx-4 sm:mx-0">
-                <div className="min-w-full inline-block align-middle">
-                    <div className="overflow-hidden">
-                        <table className="min-w-full divide-y divide-[#F3F4F6]">
-                            <thead className="bg-[#F8D7DA]">
-                                <tr>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Fecha</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Usuario</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Cédula</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Tipo</th>
-                                    <th className="py-3 px-2 sm:px-4 text-left text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Descripción</th>
-                                    <th className="py-3 px-2 sm:px-4 text-right text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Cantidad</th>
-                                    <th className="py-3 px-2 sm:px-4 text-center text-[#C62B34] text-xs sm:text-sm font-bold whitespace-nowrap">Estado</th>
+            {/* Tabla de Registros */}
+            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-inner">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-[#F3F4F6]">
+                        <tr>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Sello Temporal</th>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Sujeto</th>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Tipo</th>
+                            <th className="py-4 px-4 text-left text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Descripción</th>
+                            <th className="py-4 px-4 text-right text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Cuota</th>
+                            <th className="py-4 px-4 text-center text-[10px] font-black text-[#C62B34] uppercase tracking-widest">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-100">
+                        {filteredTransactions.length === 0 ? (
+                            <tr>
+                                <td colSpan="6" className="text-center py-12 text-gray-400 font-mono text-sm italic">
+                                    [ NO SE ENCONTRARON REGISTROS QUE COINCIDAN CON LOS CRITERIOS DE BÚSQUEDA ]
+                                </td>
+                            </tr>
+                        ) : (
+                            filteredTransactions.map((tx, idx) => (
+                                <tr key={tx.id || idx} className="hover:bg-[#F8D7DA]/5 transition-colors group">
+                                    <td className="py-4 px-4 font-mono text-xs text-gray-500 whitespace-nowrap">
+                                        {formatDate(tx.date)}
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <div className="text-sm font-bold text-gray-800">{tx.student || 'Sujeto Desconocido'}</div>
+                                        <div className="text-[10px] font-mono text-[#3465B4]">{tx.cedula || 'N/A'}</div>
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <span className={`text-[10px] font-black px-2 py-1 rounded border ${
+                                            tx.type === 'Canje' ? 'border-blue-200 bg-blue-50 text-blue-700' :
+                                            tx.type === 'Subasta' ? 'border-purple-200 bg-purple-50 text-purple-700' :
+                                            'border-gray-200 bg-gray-50 text-gray-700'
+                                        }`}>
+                                            {tx.type?.toUpperCase()}
+                                        </span>
+                                    </td>
+                                    <td className="py-4 px-4 text-xs text-gray-600 max-w-xs">
+                                        <p className="truncate" title={tx.description}>{tx.description || 'Sin detalles'}</p>
+                                    </td>
+                                    <td className={`py-4 px-4 text-right font-mono font-bold text-sm ${String(tx.amount).startsWith('-') ? 'text-[#C62B34]' : 'text-green-600'}`}>
+                                        {formatAmount(tx.amount)}
+                                    </td>
+                                    <td className="py-4 px-4 text-center">
+                                        <span className={`inline-block w-24 py-1 rounded text-[10px] font-black uppercase tracking-tighter ${
+                                            tx.status === 'Aprobado' ? 'bg-green-100 text-green-800' : 
+                                            tx.status === 'Pendiente' ? 'bg-yellow-100 text-yellow-800 animate-pulse' : 
+                                            'bg-red-100 text-red-800'
+                                        }`}>
+                                            {tx.status}
+                                        </span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-[#F3F4F6]">
-                                {filteredTransactions.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="7" className="text-center text-gray-500 py-8 bg-[#F8D7DA]/30 border border-[#F3F4F6] rounded-xl text-sm">
-                                            {transactions.length === 0 ? 'No hay transacciones registradas.' : 'No se encontraron transacciones con los filtros aplicados.'}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredTransactions.map((tx, idx) => (
-                                        <tr key={tx.id || idx} className="hover:bg-[#F8D7DA]/20 transition-colors">
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 font-medium text-xs sm:text-sm whitespace-nowrap">
-                                                {formatDate(tx.date)}
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 font-medium text-xs sm:text-sm max-w-[7.5rem] sm:max-w-none">
-                                                <div className="truncate" title={tx.student || 'Usuario desconocido'}>
-                                                    {tx.student || 'Usuario desconocido'}
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 font-medium text-xs sm:text-sm whitespace-nowrap">
-                                                {tx.cedula || 'N/A'}
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4">
-                                                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                                                    tx.type === 'Canje' ? 'bg-blue-100 text-blue-800' :
-                                                    tx.type === 'Subasta' ? 'bg-purple-100 text-purple-800' :
-                                                    'bg-[#F8D7DA] text-[#C62B34]'
-                                                }`} title={tx.type}>
-                                                    {tx.type || 'N/A'}
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-gray-700 text-xs sm:text-sm max-w-[9.375rem] sm:max-w-[12.5rem]">
-                                                <div className="truncate" title={tx.description || 'Sin descripción'}>
-                                                    {tx.description || 'Sin descripción'}
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-right font-bold text-[#3465B4] text-xs sm:text-sm whitespace-nowrap">
-                                                {formatAmount(tx.amount)}
-                                            </td>
-                                            <td className="py-3 px-2 sm:px-4 text-center">
-                                                {tx.status ? (
-                                                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                                                        tx.status === 'Aprobado' ? 'bg-green-100 text-green-800' : 
-                                                        tx.status === 'Pendiente' ? 'bg-yellow-100 text-yellow-800' : 
-                                                        tx.status === 'Rechazado' ? 'bg-red-100 text-red-800' :
-                                                        'bg-[#F8D7DA] text-[#C62B34]'
-                                                    }`}>
-                                                        {tx.status}
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-gray-400 text-xs">-</span>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            ))
+                        )}
+                    </tbody>
+                </table>
             </div>
-            
-            {filteredTransactions.length > 0 && (
-                <div className="mt-4 text-xs sm:text-sm text-gray-500 text-center">
-                    Mostrando {filteredTransactions.length} de {transactions.length} transacciones
-                </div>
-            )}
+
+            {/* Footer de Tabla */}
+            <div className="mt-6 flex flex-col sm:flex-row justify-between items-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <span>Total de entradas en base de datos: {transactions.length}</span>
+                <span>Visualizando: {filteredTransactions.length} registros</span>
+            </div>
+
+            {showToast && <Toast message={toastMsg} onClose={() => setShowToast(false)} />}
         </div>
     );
 };
