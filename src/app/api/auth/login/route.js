@@ -42,12 +42,12 @@ export async function POST(req) {
             return NextResponse.json(
                 {
                     success: true, 
-                    message: "Acceso autorizado. Bienvenido al sistema de la Fundación.", 
+                    message: "Acceso autorizado via SCiNET. Bienvenido al sistema de la Fundación.", 
                     token: token,
                     user: {
                         id: process.env.ADMIN_USERNAME,
-                        firstName: "Prof.",
-                        lastName: "Merlyn",
+                        firstName: "A.",
+                        lastName: "██████-O5",
                         points: 0,
                         type: "admin"
                     }
