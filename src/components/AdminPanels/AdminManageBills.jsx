@@ -28,7 +28,7 @@ const AdminManageBills = () => {
         }
         
         if (!/^\d+$/.test(formData.id.trim())) {
-            setErrorMsg('La cédula debe contener solo números.');
+            setErrorMsg('La identidad debe contener solo números.');
             return;
         }
         
