@@ -11,16 +11,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black overflow-x-hidden">
-      {/* Contenedor Principal: 
-          Añadido pt-10 (en móvil) y lg:pt-16 (en escritorio) para separar el contenido del Header
-      */}
+      {/* Contenedor Principal */}
       <div className="flex flex-col lg:flex-row w-full pt-0">
         
         {/* Left and Center Content */}
         <div className="flex-1 min-w-0 pb-8 px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="max-w-5xl mx-auto">
             
-            {/* Warning Banner: Reducido el mb (margen inferior) de 10 a 6 para compactar */}
+            {/* Warning Banner */}
             <div className="relative bg-black border-4 border-black mb-6 p-6 sm:p-8 md:p-10 lg:p-12 text-center shadow-lg overflow-hidden">
               {/* Background Watermark */}
               <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center pointer-events-none">
@@ -60,11 +58,55 @@ export default function Home() {
                 <span className="text-2xl group-hover:translate-x-2 transition-transform">→</span>
               </a>
             </div>
+
+            {/* --- SECCIÓN NUEVA: TEXTO EN EL ESPACIO VACÍO --- */}
+            <div className="border-t border-gray-800 pt-8 animate-in fade-in duration-700">
+              <h2 className="text-2xl font-black text-white mb-6 uppercase tracking-widest border-l-4 border-red-600 pl-4">
+                Protocolos de Seguridad de Velthar
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-400">
+                <div className="space-y-4">
+                  <p className="leading-relaxed">
+                    Usted está accediendo a un nodo central de la <span className="text-white font-bold">Fundación Velthar</span>. 
+                    Toda la información contenida en estos registros está protegida por un Agente Memético de Seguridad. 
+                    Cualquier intento de descarga no autorizada resultará en un cierre de emergencia del terminal local.
+                  </p>
+                  <p className="leading-relaxed border-l border-gray-700 pl-4 italic">
+                    "Asegurar, Contener, Proteger. Nuestra labor es invisible para que el mundo sea predecible."
+                  </p>
+                </div>
+
+                <div className="bg-zinc-950 p-6 border border-zinc-800 rounded-sm">
+                  <h3 className="text-red-500 font-bold mb-2 uppercase text-sm tracking-tighter">Estado de la Base de Datos</h3>
+                  <ul className="text-sm space-y-2 font-mono">
+                    <li className="flex justify-between border-b border-zinc-900 pb-1">
+                      <span>SERVIDOR:</span> <span className="text-green-500 underline">ACTIVO</span>
+                    </li>
+                    <li className="flex justify-between border-b border-zinc-900 pb-1">
+                      <span>NIVEL DE AMENAZA:</span> <span className="text-yellow-500">KETER</span>
+                    </li>
+                    <li className="flex justify-between border-b border-zinc-900 pb-1">
+                      <span>ENCRIPTACIÓN:</span> <span className="text-white">AES-256 SCP-V</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span>LOCALIZACIÓN:</span> <span className="text-white">[DATOS ELIMINADOS]</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-10 p-4 bg-red-900/10 border border-red-900/30 text-red-500 text-xs font-mono">
+                SISTEMA AUTOMATIZADO: Si no posee las credenciales necesarias, cierre esta ventana inmediatamente. 
+                El rastreo geográfico por IP ha sido iniciado como medida preventiva.
+              </div>
+            </div>
+            {/* --- FIN DE SECCIÓN NUEVA --- */}
+
           </div>
         </div>
 
         {/* Right Sidebar */}
-        {/* Ajustado pt-10 para que el título "COMENZAR" no esté pegado al borde superior del sidebar */}
         <aside className="w-full lg:w-80 xl:w-96 shrink-0 bg-gray-900 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-6 sm:p-8 lg:p-10 lg:pt-16">
           <div className="space-y-10">
             {/* Get Started Section */}
