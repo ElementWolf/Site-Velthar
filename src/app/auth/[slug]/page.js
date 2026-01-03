@@ -73,14 +73,15 @@ const DynamicAuth = ({ params }) => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex items-center justify-center px-2 sm:px-4 pt-32 overflow-x-hidden">
+        /* He quitado pt-32 y ajustado el min-h para que no genere scroll infinito */
+        <div className="min-h-[calc(100vh-120px)] bg-black text-white flex items-center justify-center px-4 overflow-hidden">
             <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-gray-900 p-6 sm:p-8 rounded-lg shadow-lg border border-red-600 flex flex-col gap-2">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-red-500 mb-2">
+                    <h1 className="text-3xl font-bold text-red-500 mb-2 uppercase tracking-tighter">
                         Fundación SCP - Velthar
                     </h1>
                     <p className="text-gray-400">Asegurar. Contener. Proteger.</p>
-                    <p className="text-sm text-gray-500 mt-2">Acceso Nivel 1 Requerido</p>
+                    <p className="text-sm text-gray-500 mt-2 font-mono">Acceso Nivel █ Requerido</p>
                 </div>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
@@ -95,7 +96,7 @@ const DynamicAuth = ({ params }) => {
                                     name="firstName"
                                     value={inputValues.firstName}
                                     onChange={handleChange}
-                                    placeholder="Ingrese su nombre"
+                                    placeholder="Nombre"
                                     className="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                                 />
                             </div>
@@ -108,7 +109,7 @@ const DynamicAuth = ({ params }) => {
                                     name="lastName"
                                     value={inputValues.lastName}
                                     onChange={handleChange}
-                                    placeholder="Ingrese su apellido"
+                                    placeholder="Apellido"
                                     className="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                                 />
                             </div>
@@ -169,7 +170,7 @@ const DynamicAuth = ({ params }) => {
 
                 <div className="mt-4 text-center text-xs text-gray-600">
                     <p>Fundación SCP - División Velthar</p>
-                    <p>Site-██ - Protocolo de Contención Activo</p>
+                    <p>Site-357 - Protocolo de contención activo.</p>
                 </div>
             </div>
         </div>
