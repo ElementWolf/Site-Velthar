@@ -47,7 +47,7 @@ export async function POST(req) {
                     user: {
                         id: process.env.ADMIN_USERNAME,
                         firstName: "A.",
-                        lastName: "██████-O5",
+                        lastName: "████-O5",
                         points: 0,
                         type: "admin"
                     }
