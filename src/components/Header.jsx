@@ -35,10 +35,8 @@ const Header = () => {
 
     return (
         <header className={`bg-gray-900 border-b-2 border-black w-full z-30 fixed top-0 left-0 transition-transform duration-300 ${show ? 'translate-y-0' : '-translate-y-full'}`} style={{willChange:'transform'}}>
-            {/* Top Bar - Tamaño Original */}
             <div className="border-b border-gray-700">
                 <div className="container mx-auto px-4 py-1 flex justify-between items-center">
-                    {/* Logo and Title */}
                     <div onClick={() => router.push(routesDictionary.index)} className="cursor-pointer flex items-center space-x-3">
                         <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center border-2 border-black">
                             <Image src={"/logo.png"} width={40} height={40} alt='SCP Logo' className="rounded-full" />
@@ -49,7 +47,6 @@ const Header = () => {
                         </div>
                     </div>
 
-                    {/* Search and Auth */}
                     <div className="flex items-center space-x-4">
                         <form onSubmit={handleSearch} className="hidden md:flex items-center space-x-2">
                             <input
@@ -91,7 +88,6 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* Navigation Bar - CLASSIFIED VERSION (Espaciado Original) */}
             <nav className="bg-gray-800 border-b border-gray-700">
                 <div className="container mx-auto px-4">
                     <ul className="hidden md:flex space-x-1">
@@ -104,7 +100,6 @@ const Header = () => {
                         </li>
                     </ul>
 
-                    {/* Mobile Menu Clasificado */}
                     {menuOpen && (
                         <div className="md:hidden py-4 text-center">
                             <span className="text-red-600 font-bold text-xs uppercase tracking-tighter">
