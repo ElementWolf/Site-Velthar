@@ -14,7 +14,7 @@ export default function Home() {
       {/* Contenedor Principal: 
           Añadido pt-10 (en móvil) y lg:pt-16 (en escritorio) para separar el contenido del Header
       */}
-      <div className="flex flex-col lg:flex-row w-full -mt-30">
+      <div className="flex flex-col lg:flex-row w-full -mt-15">
         
         {/* Left and Center Content */}
         <div className="flex-1 min-w-0 pb-8 px-4 sm:px-6 lg:px-8 xl:px-12">
