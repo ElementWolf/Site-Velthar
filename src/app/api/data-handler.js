@@ -46,7 +46,7 @@ async function FindUserById(id) {
     const dbData = await readDatabase();
     const idStr = String(id).trim();
     if (idStr === String(process.env.ADMIN_USERNAME)) {
-        return { id: process.env.ADMIN_USERNAME, firstName: "Prof.", lastName: "Merlyn", status: 'Activo' };
+        return { id: process.env.ADMIN_USERNAME, firstName: "A.", lastName: "████-O5", status: 'Activo' };
     }
     const user = (dbData.users || []).find(user => String(user.id).trim() === idStr);
     if (user) {
