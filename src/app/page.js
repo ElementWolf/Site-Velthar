@@ -11,23 +11,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black overflow-x-hidden">
-      {/* Contenedor Principal: 
-          Añadido pt-10 (en móvil) y lg:pt-16 (en escritorio) para separar el contenido del Header
+      {/* Ajuste de Padding Superior: 
+          pt-28 para móvil, pt-32 para escritorio para dejar espacio al Header fijo.
       */}
-      <div className="flex flex-col lg:flex-row w-full pt-10 lg:pt-16">
+      <div className="flex flex-col lg:flex-row w-full pt-28 lg:pt-32">
         
         {/* Left and Center Content */}
         <div className="flex-1 min-w-0 pb-8 px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="max-w-5xl mx-auto">
             
-            {/* Warning Banner: Reducido el mb (margen inferior) de 10 a 6 para compactar */}
-            <div className="relative bg-black border-4 border-black mb-6 p-6 sm:p-8 md:p-10 lg:p-12 text-center shadow-lg overflow-hidden">
-              {/* Background Watermark */}
+            {/* Warning Banner */}
+            <div className="relative bg-black border-4 border-black mb-10 p-6 sm:p-8 md:p-10 lg:p-12 text-center shadow-lg overflow-hidden">
               <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center pointer-events-none">
                 <div className="text-[100px] sm:text-[150px] md:text-[200px] lg:text-[250px] font-bold select-none">⚛</div>
               </div>
               
-              {/* Warning Text */}
               <div className="relative z-10">
                 <p className="text-xs sm:text-sm md:text-base lg:text-lg font-bold mb-3 text-white uppercase tracking-wide">
                   ADVERTENCIA: LA BASE DE DATOS DE LA FUNDACIÓN ESTÁ
@@ -64,75 +62,28 @@ export default function Home() {
         </div>
 
         {/* Right Sidebar */}
-        {/* Ajustado pt-10 para que el título "COMENZAR" no esté pegado al borde superior del sidebar */}
-        <aside className="w-full lg:w-80 xl:w-96 shrink-0 bg-gray-900 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-6 sm:p-8 lg:p-10 lg:pt-16">
+        <aside className="w-full lg:w-80 xl:w-96 shrink-0 bg-gray-900 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-6 sm:p-8 lg:p-10">
           <div className="space-y-10">
-            {/* Get Started Section */}
             <div>
-              <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">
-                Comenzar
-              </h2>
+              <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">Comenzar</h2>
               <p className="text-gray-300 leading-relaxed text-base">
-                Revisa nuestra{' '}
-                <a href="#guide" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
-                  Guía para Nuevos
-                </a>
-                . Para preguntas adicionales, consulta las{' '}
-                <a href="#faq" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
-                  Preguntas Frecuentes
-                </a>
-                .
+                Revisa nuestra <a href="#guide" className="text-red-600 hover:text-red-700 font-bold underline">Guía para Nuevos</a>.
               </p>
             </div>
 
-            {/* Join the Wiki Section */}
             <div>
-              <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">
-                Únete a la Wiki
-              </h2>
+              <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">Únete a la Wiki</h2>
               <p className="text-gray-300 leading-relaxed text-base">
-                Lee las{' '}
-                <a href="#rules" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
-                  Reglas del Sitio
-                </a>
-                {' '}y la{' '}
-                <a href="#required" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
-                  Lectura Requerida
-                </a>
-                , luego solicita{' '}
-                <a href="#membership" className="text-red-600 hover:text-red-700 font-bold underline decoration-2">
-                  membresía del sitio
-                </a>
-                .
+                Lee las <a href="#rules" className="text-red-600 hover:text-red-700 font-bold underline">Reglas del Sitio</a>.
               </p>
             </div>
 
-            {/* Quick Links */}
             <div>
-              <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">
-                Enlaces Rápidos
-              </h2>
+              <h2 className="text-2xl lg:text-3xl font-black text-white mb-5 uppercase tracking-tight">Enlaces Rápidos</h2>
               <ul className="space-y-3">
-                <li>
-                  <a href="#scp-list" className="text-red-600 hover:text-red-700 font-bold text-lg underline decoration-2">
-                    Lista de SCPs
-                  </a>
-                </li>
-                <li>
-                  <a href="#tales" className="text-red-600 hover:text-red-700 font-bold text-lg underline decoration-2">
-                    Historias
-                  </a>
-                </li>
-                <li>
-                  <a href="#goi" className="text-red-600 hover:text-red-700 font-bold text-lg underline decoration-2">
-                    Grupos de Interés
-                  </a>
-                </li>
-                <li>
-                  <a href="#canons" className="text-red-600 hover:text-red-700 font-bold text-lg underline decoration-2">
-                    Cánones
-                  </a>
-                </li>
+                <li><a href="#scp-list" className="text-red-600 hover:text-red-700 font-bold text-lg underline">Lista de SCPs</a></li>
+                <li><a href="#tales" className="text-red-600 hover:text-red-700 font-bold text-lg underline">Historias</a></li>
+                <li><a href="#goi" className="text-red-600 hover:text-red-700 font-bold text-lg underline">Grupos de Interés</a></li>
               </ul>
             </div>
           </div>
