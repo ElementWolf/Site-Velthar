@@ -89,6 +89,16 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* --- EASTER EGG MIMETIZADO CON EL FONDO --- */}
+            <div className="mt-20 py-10 text-center select-text">
+              <p style={{ color: '#030303' }} className="text-[10px] font-mono tracking-[0.2em] uppercase cursor-default">
+                [O5-COUNCIL-EYES-ONLY]: El protocolo Velthar-99 ha sido activado. 
+                Si puedes leer esto, tu lealtad ha sido registrada. 
+                No confíes en las sombras del Sitio-357.
+              </p>
+            </div>
+
           </div>
         </div>
 
