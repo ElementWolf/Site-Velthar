@@ -115,7 +115,7 @@ const AdminManageBills = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
-                        <label className="block text-gray-600 text-xs font-bold uppercase mb-2">Cédula (ID)</label>
+                        <label className="block text-gray-600 text-xs font-bold uppercase mb-2">Identificación</label>
                         <input
                             type="text"
                             name="id"
@@ -141,7 +141,7 @@ const AdminManageBills = () => {
                 
                 <div className="bg-slate-800 border-l-4 border-yellow-500 rounded-lg p-4">
                     <p className="text-white text-[11px] font-mono leading-tight">
-                        <span className="text-yellow-400 font-bold">PROTOCOLO DE SEGURIDAD:</span> El nuevo agente será asignado a la Clase-D hasta su validación oficial por el consejo. Todo intento de registro falso será rastreado por la IA de la Fundación.
+                        <span className="text-yellow-400 font-bold">PROTOCOLO DE SEGURIDAD:</span> Asegúrese de que el nuevo agente haya obtenido su validación oficial por el consejo. Las credenciales creadas aquí deben ser manejadas con la máxima confidencialidad posible.
                     </p>
                 </div>
             </div>
