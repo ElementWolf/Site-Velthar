@@ -14,25 +14,25 @@ export default function Home() {
       {/* Main Content Area */}
       <div className="flex flex-col lg:flex-row w-full">
         {/* Left and Center Content */}
-        {/* El uso de min-w-0 evita que el contenido ancho empuje la barra lateral hacia afuera */}
-        <div className="flex-1 min-w-0 pb-8 px-4 sm:px-6 lg:px-12">
+        <div className="flex-1 min-w-0 pb-8 px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="max-w-5xl mx-auto">
             {/* Warning Banner */}
-            <div className="relative bg-black border-4 border-black mb-10 p-6 sm:p-8 md:p-10 lg:p-16 text-center shadow-lg">
+            <div className="relative bg-black border-4 border-black mb-10 p-6 sm:p-8 md:p-10 lg:p-12 text-center shadow-lg overflow-hidden">
               {/* Background Watermark - SCP Logo Style */}
               <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center pointer-events-none">
-                <div className="text-[100px] sm:text-[150px] md:text-[200px] lg:text-[300px] font-bold select-none">⚛</div>
+                <div className="text-[100px] sm:text-[150px] md:text-[200px] lg:text-[250px] font-bold select-none">⚛</div>
               </div>
               
               {/* Warning Text */}
               <div className="relative z-10">
-                <p className="text-sm sm:text-base lg:text-lg font-bold mb-3 text-white uppercase tracking-wide">
+                <p className="text-xs sm:text-sm md:text-base lg:text-lg font-bold mb-3 text-white uppercase tracking-wide">
                   ADVERTENCIA: LA BASE DE DATOS DE LA FUNDACIÓN ESTÁ
                 </p>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-9xl font-black text-red-600 mb-5 tracking-tighter leading-none">
+                {/* Ajuste de tamaño: se redujo de xl:text-9xl a xl:text-8xl para que quepa con el sidebar */}
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-red-600 mb-5 tracking-tighter leading-none break-words">
                   CLASIFICADA
                 </h1>
-                <p className="text-sm sm:text-base lg:text-lg font-bold text-white uppercase tracking-wide">
+                <p className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white uppercase tracking-wide max-w-2xl mx-auto">
                   EL PERSONAL NO AUTORIZADO SERÁ RASTREADO, LOCALIZADO Y DETENIDO
                 </p>
               </div>
@@ -65,7 +65,6 @@ export default function Home() {
         </div>
 
         {/* Right Sidebar */}
-        {/* shrink-0 asegura que la barra mantenga su ancho y no se comprima */}
         <aside className="w-full lg:w-80 xl:w-96 shrink-0 bg-gray-900 border-t-4 lg:border-t-0 lg:border-l-4 border-black p-6 sm:p-8 lg:p-10">
           <div className="space-y-10">
             {/* Get Started Section */}
