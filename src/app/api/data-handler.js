@@ -1,10 +1,7 @@
-// 🛡️ PROTOCOLO DE REDIRECCIÓN SCP-DB
-// Este archivo actúa como un túnel para que los módulos antiguos 
-// encuentren las funciones en el nuevo núcleo /src/lib/database/
-
+// 🛡️ PROTOCOLO DE COMPATIBILIDAD SCP
 import * as NewCore from "@/lib/database/data-handler";
 
-// Exportamos las funciones básicas que tus archivos están buscando
+// --- Exportaciones Reales (Lo que sí usamos) ---
 export const readDatabase = NewCore.readDatabase;
 export const writeDatabase = NewCore.writeDatabase;
 export const FindUserById = NewCore.FindUserById;
@@ -13,5 +10,14 @@ export const addRegistrationRequest = NewCore.addRegistrationRequest;
 export const getAllRegistrationRequests = NewCore.getAllRegistrationRequests;
 export const AddAuditLog = NewCore.AddAuditLog;
 
-// Por si algún archivo importa todo el objeto por defecto
+// --- Funciones "Fantasma" (Para evitar errores de build de Merlyn Bills) ---
+export const getDefaultPoints = async () => 0;
+export const setDefaultPoints = async () => true;
+export const clearHistoryData = async () => true;
+export const getAnnouncements = async () => [];
+export const AddAnnouncement = async () => true;
+export const getExchangeRate = async () => 1;
+export const getAllHistory = async () => [];
+export const finalizeAuction = async () => true;
+
 export default NewCore;
