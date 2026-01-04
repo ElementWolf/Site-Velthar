@@ -9,11 +9,13 @@ import AdminRegistrationRequests from '@/components/AdminPanels/AdminRegistratio
 import AdminManageStudents from '@/components/AdminPanels/AdminManageStudents';
 import StudentPublicStats from '@/components/StudentPanels/StudentPublicStats';
 import AdminExtraTools from '@/components/AdminPanels/AdminExtraTools';
+import { useAuth } from '@/contexts/UserAuthContext'; // Importamos el contexto para el padding dinámico
 import React, { useState, useEffect } from 'react'
 
 function AdminPage() {
     const [activeTab, setActiveTab] = useState('asignar');
     const [isClient, setIsClient] = useState(false);
+    const { user } = useAuth(); // Obtenemos el estado del usuario
 
     // Asegurar que estamos en el cliente
     useEffect(() => {
@@ -74,9 +76,10 @@ function AdminPage() {
     };
 
     return (
-        <div className="grow flex flex-col md:flex-row p-2 sm:p-4 md:p-6 bg-black text-white min-h-screen overflow-x-hidden">
+        /* AJUSTE: pt-16 si hay usuario (header simple), pt-28 si no hay usuario (header con alerta roja) */
+        <div className={`grow flex flex-col md:flex-row p-2 sm:p-4 md:p-6 bg-black text-white min-h-screen overflow-x-hidden ${user ? 'pt-16' : 'pt-28'}`}>
             {/* Left Panel */}
-            <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-md mb-4 md:mb-0">
+            <div className="w-full md:w-1/4 bg-gray-900 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-md mb-4 md:mb-0 h-fit">
                 <h3 className="text-lg font-bold text-red-500 mb-4">Centro de Comando O5</h3>
                 
                 {/* Estado del Sitio */}
@@ -156,4 +159,4 @@ function AdminPage() {
     );
 }
 
-export default AdminPage
+export default AdminPage;
