@@ -39,7 +39,6 @@ const AdminManageBills = () => {
         e.preventDefault();
         setStatus({ loading: true, error: '', success: '' });
 
-        // Validación de identidad numérica y longitud (características del original)
         if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.id.trim() || !formData.password.trim()) {
             setStatus({ loading: false, error: 'TODOS LOS CAMPOS SON OBLIGATORIOS.', success: '' });
             return;
@@ -76,15 +75,15 @@ const AdminManageBills = () => {
         }
     };
 
-    // Estilos SCP Originales
-    const inputClass = "w-full p-3 border-2 border-gray-700 rounded-lg bg-black text-white focus:border-red-600 outline-none font-mono transition-all placeholder-gray-800 appearance-none";
-    const labelClass = "block text-gray-400 text-xs font-bold uppercase mb-2 tracking-widest";
+    // Estilos Restaurados (Fondo claro, texto oscuro)
+    const inputClass = "w-full p-3 border-2 border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] font-sans transition-all placeholder-gray-400 appearance-none";
+    const labelClass = "block text-gray-700 text-xs font-bold uppercase mb-2 tracking-tight";
 
     return (
-        <div className="bg-black border border-gray-800 rounded-2xl shadow-2xl p-8 mb-6 animate-slide-up-fade text-left">
-            {/* Header Terminal */}
-            <div className="border-b-2 border-red-600 pb-4 mb-6">
-                <h2 className="text-2xl font-black text-red-600 uppercase tracking-tighter">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-6 animate-slide-up-fade text-left">
+            {/* Header - Rojo sobre Blanco */}
+            <div className="border-b-2 border-[#C62B34] pb-4 mb-6">
+                <h2 className="text-2xl font-black text-[#C62B34] uppercase tracking-tighter">
                     Terminal de Registro - Nivel de Acceso O5
                 </h2>
                 <p className="text-gray-500 text-sm italic font-mono">Clasificación: Top Secret // Solo Personal Autorizado</p>
@@ -92,18 +91,18 @@ const AdminManageBills = () => {
 
             {/* Mensajes de Estado */}
             {status.error && (
-                <div className="mb-4 bg-red-900/20 text-red-500 border-l-4 border-red-600 font-medium rounded-r-lg px-4 py-3 text-sm flex items-center font-mono">
+                <div className="mb-4 bg-red-50 text-[#C62B34] border-l-4 border-[#C62B34] font-medium rounded-r-lg px-4 py-3 text-sm flex items-center">
                     <span className="mr-2">⚠️</span> {status.error}
                 </div>
             )}
             {status.success && (
-                <div className="mb-4 bg-green-900/20 text-green-500 border-l-4 border-green-500 font-medium rounded-r-lg px-4 py-3 text-sm flex items-center font-mono">
+                <div className="mb-4 bg-emerald-50 text-emerald-700 border-l-4 border-emerald-500 font-medium rounded-r-lg px-4 py-3 text-sm flex items-center">
                     <span className="mr-2">✅</span> {status.success}
                 </div>
             )}
 
-            <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6 mb-6">
-                <h3 className="text-md font-bold text-gray-400 mb-6 uppercase tracking-widest border-b border-gray-800 pb-2">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
+                <h3 className="text-md font-bold text-gray-700 mb-6 uppercase tracking-widest border-b border-gray-200 pb-2">
                     Credenciales del Nuevo Agente
                 </h3>
                 
@@ -117,7 +116,7 @@ const AdminManageBills = () => {
                                 value={formData.firstName}
                                 onChange={handleChange}
                                 className={inputClass}
-                                placeholder="NOMBRE"
+                                placeholder="Nombre del Agente"
                             />
                         </div>
                         <div>
@@ -128,7 +127,7 @@ const AdminManageBills = () => {
                                 value={formData.lastName}
                                 onChange={handleChange}
                                 className={inputClass}
-                                placeholder="APELLIDO"
+                                placeholder="Apellido del Agente"
                             />
                         </div>
                     </div>
@@ -142,7 +141,7 @@ const AdminManageBills = () => {
                                 value={formData.id}
                                 onChange={handleChange}
                                 className={`${inputClass} font-mono`}
-                                placeholder="ID NUMÉRICO"
+                                placeholder="Ej: 80123456"
                             />
                         </div>
                         <div>
@@ -167,11 +166,11 @@ const AdminManageBills = () => {
                                 onChange={handleChange}
                                 className={inputClass}
                             >
-                                <option value="1">NIVEL 1</option>
-                                <option value="2">NIVEL 2</option>
-                                <option value="3">NIVEL 3</option>
-                                <option value="4">NIVEL 4</option>
-                                <option value="5">NIVEL 5 (O5)</option>
+                                <option value="1">Nivel 1</option>
+                                <option value="2">Nivel 2</option>
+                                <option value="3">Nivel 3</option>
+                                <option value="4">Nivel 4</option>
+                                <option value="5">Nivel 5 (O5)</option>
                             </select>
                         </div>
                         <div>
@@ -189,23 +188,23 @@ const AdminManageBills = () => {
                         </div>
                     </div>
 
-                    {/* Mensaje de Protocolo */}
-                    <div className="bg-gray-800 border-l-4 border-yellow-600 rounded-lg p-4 mb-6">
-                        <p className="text-white text-[11px] font-mono leading-tight">
-                            <span className="text-yellow-500 font-bold">PROTOCOLO DE SEGURIDAD:</span> Asegúrese de que el nuevo agente haya obtenido su validación oficial. Las credenciales creadas aquí deben ser manejadas con la máxima confidencialidad.
+                    {/* Mensaje de Protocolo - Fondo Oscuro como en la captura */}
+                    <div className="bg-[#1a1c1e] border-l-4 border-yellow-500 rounded-lg p-4 mb-6">
+                        <p className="text-white text-[11px] font-mono leading-tight text-left">
+                            <span className="text-yellow-400 font-bold uppercase">Protocolo de Seguridad:</span> Asegúrese de que el nuevo agente haya obtenido su validación oficial. Las credenciales creadas aquí deben ser manejadas con la máxima confidencialidad.
                         </p>
                     </div>
 
-                    <div className="flex justify-end border-t border-gray-800 pt-6">
+                    <div className="flex justify-end pt-4">
                         <button 
                             type="submit" 
                             disabled={status.loading}
-                            className="bg-red-700 hover:bg-red-600 text-white font-black py-4 px-10 rounded-lg transition-all shadow-lg active:scale-95 disabled:opacity-50 uppercase tracking-[0.2em] text-xs flex items-center gap-3 border-b-4 border-red-900"
+                            className="bg-[#C62B34] hover:bg-[#a81e28] text-white font-black py-4 px-10 rounded-lg transition-all shadow-md active:scale-95 disabled:opacity-50 uppercase tracking-widest text-sm flex items-center gap-3 border-b-4 border-[#8b1a22]"
                         >
                             {status.loading ? (
                                 <>
                                     <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                                    Sincronizando...
+                                    Procesando...
                                 </>
                             ) : (
                                 'Autorizar Registro'
