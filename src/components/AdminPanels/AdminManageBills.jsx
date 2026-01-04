@@ -1,231 +1,135 @@
 import api from '@/axios';
-import { useState } from 'react';
-import LoadingSpinner from '../LoadingSpinner';
+import { useState, useEffect } from 'react';
 
 const AdminManageBills = () => {
+    const [departments, setDepartments] = useState(['Científico']); // "Científico" garantizado por defecto
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         id: '',
         password: '',
-        accessLevel: '', // Nuevo campo
-        department: ''   // Nuevo campo
+        accessLevel: '1',
+        department: 'Científico'
     });
-    const [errorMsg, setErrorMsg] = useState('');
-    const [successMsg, setSuccessMsg] = useState('');
-    const [submitting, setSubmitting] = useState(false);
+    const [status, setStatus] = useState({ loading: false, error: '', success: '' });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    // Cargar departamentos desde la base de datos al iniciar
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                // Asumiendo que crearás este endpoint o que el de stats/config los tiene
+                const res = await api.get('/api/admin/departments'); 
+                if (res.data && res.data.length > 0) {
+                    setDepartments(res.data);
+                    // Si el default no está en la lista nueva, ponemos el primero que llegue
+                    setFormData(prev => ({ ...prev, department: res.data[0] }));
+                }
+            } catch (err) {
+                console.log("Usando departamentos por defecto (Científico).");
+            }
+        };
+        fetchDepartments();
+    }, []);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleRegister = async () => {
-        setErrorMsg('');
-        setSuccessMsg('');
-        
-        // Validación de campos obligatorios (incluyendo los nuevos)
-        if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.id.trim() || 
-            !formData.password.trim() || !formData.accessLevel || !formData.department) {
-            setErrorMsg('Todos los campos son obligatorios, incluyendo nivel y departamento.');
-            return;
-        }
-        
-        if (!/^\d+$/.test(formData.id.trim())) {
-            setErrorMsg('La identidad debe contener solo números.');
-            return;
-        }
-        
-        if (formData.password.length < 6) {
-            setErrorMsg('La contraseña debe tener al menos 6 caracteres.');
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setStatus({ loading: true, error: '', success: '' });
+
+        if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.id.trim() || !formData.password.trim()) {
+            setStatus({ loading: false, error: 'TODOS LOS CAMPOS SON OBLIGATORIOS.', success: '' });
             return;
         }
 
-        setSubmitting(true);
         try {
-            const token = localStorage.getItem('token');
-            await api.post('/auth/register', {
-                id: formData.id.trim(),
-                firstName: formData.firstName.trim(),
-                lastName: formData.lastName.trim(),
-                password: formData.password,
-                role: formData.accessLevel, // Enviando nivel como rol
-                department: formData.department // Enviando departamento
-            }, {
-                headers: { 'Authorization': `Bearer ${token}` }
+            await api.post('/api/admin/students', formData);
+            setStatus({ 
+                loading: false, 
+                error: '', 
+                success: `PERSONAL [${formData.lastName.toUpperCase()}] REGISTRADO EXITOSAMENTE.` 
             });
-            
-            // Limpiar formulario
-            setFormData({ 
-                firstName: '', 
-                lastName: '', 
-                id: '', 
-                password: '', 
-                accessLevel: '', 
-                department: '' 
-            });
-            setSuccessMsg('Agente registrado exitosamente en la Base de Datos de la Fundación.');
-        } catch (e) {
-            const errorMessage = e.response?.data?.message || 'Error al registrar agente.';
-            setErrorMsg(errorMessage);
-        } finally {
-            setSubmitting(false);
+            setFormData(prev => ({ ...prev, firstName: '', lastName: '', id: '', password: '' }));
+        } catch (err) {
+            const msg = err.response?.data?.error || 'FALLO EN LA CONEXIÓN CON EL SITIO.';
+            setStatus({ loading: false, error: msg.toUpperCase(), success: '' });
         }
     };
 
-    const inputStyle = "w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C62B34] focus:ring-1 focus:ring-[#C62B34] transition-all bg-white text-gray-900 placeholder-gray-400 appearance-none";
+    const inputClass = "w-full bg-black border border-gray-700 p-2.5 text-white text-sm focus:border-red-600 outline-none font-mono transition-colors";
+    const labelClass = "block text-[10px] font-bold text-gray-500 uppercase mb-1 tracking-widest";
 
     return (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-6 animate-slide-up-fade">
-            {/* Header */}
-            <div className="border-b-2 border-[#C62B34] pb-4 mb-6 text-left">
-                <h2 className="text-2xl font-black text-[#C62B34] uppercase tracking-tighter">
-                    Terminal de Registro - Nivel de Acceso O5
-                </h2>
-                <p className="text-gray-500 text-sm italic font-mono">Clasificación: Top Secret // Solo Personal Autorizado</p>
+        <div className="max-w-4xl mx-auto animate-slide-up-fade">
+            <div className="mb-8 border-b-2 border-red-900 pb-4">
+                <h2 className="text-3xl font-black text-red-600 uppercase tracking-tighter italic">Alta de Personal Nuevo</h2>
+                <p className="text-gray-500 text-xs font-mono mt-1">SISTEMA DE GESTIÓN DE EXPEDIENTES // ACCESO O5-RESTRINGIDO</p>
             </div>
 
-            {/* Mensajes de Estado */}
-            {errorMsg && (
-                <div className="mb-4 bg-red-50 text-[#C62B34] border-l-4 border-[#C62B34] font-medium rounded-r-lg px-4 py-3 text-sm flex items-center">
-                    <span className="mr-2">⚠️</span> {errorMsg}
+            {status.error && (
+                <div className="mb-6 bg-red-900/10 border-l-4 border-red-600 p-4 text-red-500 text-xs font-mono">
+                    ⚠️ [ADVERTENCIA]: {status.error}
                 </div>
             )}
-            {successMsg && (
-                <div className="mb-4 bg-emerald-50 text-emerald-700 border-l-4 border-emerald-500 font-medium rounded-r-lg px-4 py-3 text-sm flex items-center">
-                    <span className="mr-2">✅</span> {successMsg}
+            {status.success && (
+                <div className="mb-6 bg-green-900/10 border-l-4 border-green-600 p-4 text-green-500 text-xs font-mono">
+                    ✅ [SISTEMA]: {status.success}
                 </div>
             )}
 
-            {/* Registration Form */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
-                <h3 className="text-md font-bold text-gray-700 mb-6 uppercase tracking-widest border-b border-gray-200 pb-2 text-left">
-                    Credenciales del Nuevo Agente
-                </h3>
-                
-                {/* Nombre y Apellido */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div className="text-left">
-                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Nombre</label>
-                        <input
-                            type="text"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                            className={inputStyle}
-                            placeholder="Nombre del Agente"
-                        />
-                    </div>
-                    
-                    <div className="text-left">
-                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Apellido</label>
-                        <input
-                            type="text"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                            className={inputStyle}
-                            placeholder="Apellido del Agente"
-                        />
-                    </div>
-                </div>
-                
-                {/* ID y Password */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div className="text-left">
-                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Identificación</label>
-                        <input
-                            type="text"
-                            name="id"
-                            value={formData.id}
-                            onChange={handleInputChange}
-                            className={`${inputStyle} font-mono`}
-                            placeholder="Ej: 80123456"
-                        />
-                    </div>
-                    
-                    <div className="text-left">
-                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Contraseña</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            className={inputStyle}
-                            placeholder="••••••••"
-                        />
-                    </div>
+            <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-900/50 p-6 border border-gray-800 rounded-lg">
+                <div>
+                    <label className={labelClass}>Nombre del Sujeto</label>
+                    <input name="firstName" value={formData.firstName} onChange={handleChange} className={inputClass} placeholder="NOMBRE" />
                 </div>
 
-                {/* NUEVOS INPUTS: Nivel de Acceso y Departamento */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div className="text-left">
-                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Nivel de Acceso</label>
-                        <select
-                            name="accessLevel"
-                            value={formData.accessLevel}
-                            onChange={handleInputChange}
-                            className={inputStyle}
-                        >
-                            <option value="">Seleccionar Nivel...</option>
-                            <option value="1">Nivel 1 (Personal de Clase D)</option>
-                            <option value="2">Nivel 2 (Investigador Jr)</option>
-                            <option value="3">Nivel 3 (Agente de Campo)</option>
-                            <option value="4">Nivel 4 (Director de Sitio)</option>
-                            <option value="5">Nivel 5 (Consejo O5)</option>
-                        </select>
-                    </div>
-                    
-                    <div className="text-left">
-                        <label className="block text-gray-700 text-xs font-bold uppercase mb-2">Departamento / Rol</label>
-                        <select
-                            name="department"
-                            value={formData.department}
-                            onChange={handleInputChange}
-                            className={inputStyle}
-                        >
-                            <option value="">Seleccionar Área...</option>
-                            <optgroup label="Operaciones">
-                                <option value="logistica">Logística / Gois</option>
-                                <option value="seguridad">Seguridad Interna</option>
-                                <option value="contencion">Equipos de Contención</option>
-                            </optgroup>
-                            <optgroup label="Científico">
-                                <option value="investigacion">Investigación y Desarrollo</option>
-                                <option value="medico">Departamento Médico</option>
-                            </optgroup>
-                            <optgroup label="Administrativo">
-                                <option value="rrhh">Recursos Humanos</option>
-                                <option value="it">Sistemas / IT</option>
-                            </optgroup>
-                        </select>
-                    </div>
+                <div>
+                    <label className={labelClass}>Apellido del Sujeto</label>
+                    <input name="lastName" value={formData.lastName} onChange={handleChange} className={inputClass} placeholder="APELLIDO" />
                 </div>
-                
-                <div className="bg-slate-800 border-l-4 border-yellow-500 rounded-lg p-4 text-left">
-                    <p className="text-white text-[11px] font-mono leading-tight">
-                        <span className="text-yellow-400 font-bold">PROTOCOLO DE SEGURIDAD:</span> Asegúrese de que el nuevo agente haya obtenido su validación oficial. Las credenciales creadas aquí deben ser manejadas con la máxima confidencialidad.
-                    </p>
-                </div>
-            </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-end">
-                <button 
-                    onClick={handleRegister} 
-                    disabled={submitting}
-                    className="bg-[#C62B34] hover:bg-[#a81e28] text-white font-black py-4 px-10 rounded-lg transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest text-sm flex items-center gap-3 border-b-4 border-[#8b1a22]"
-                >
-                    {submitting ? (
-                        <>
-                            <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                            Procesando...
-                        </>
-                    ) : (
-                        'Autorizar Registro'
-                    )}
-                </button>
-            </div>
+                <div>
+                    <label className={labelClass}>Identificación (ID)</label>
+                    <input name="id" value={formData.id} onChange={handleChange} className={inputClass} placeholder="NÚMERO DE REGISTRO" />
+                </div>
+
+                <div>
+                    <label className={labelClass}>Clave de Acceso</label>
+                    <input name="password" type="password" value={formData.password} onChange={handleChange} className={inputClass} placeholder="********" />
+                </div>
+
+                <div>
+                    <label className={labelClass}>Nivel de Autorización</label>
+                    <select name="accessLevel" value={formData.accessLevel} onChange={handleChange} className={inputClass}>
+                        <option value="1">NIVEL 1</option>
+                        <option value="2">NIVEL 2</option>
+                        <option value="3">NIVEL 3</option>
+                        <option value="4">NIVEL 4</option>
+                        <option value="5">NIVEL 5 (O5)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className={labelClass}>Departamento Asignado</label>
+                    <select name="department" value={formData.department} onChange={handleChange} className={inputClass}>
+                        {departments.map((dept, index) => (
+                            <option key={index} value={dept}>{dept.toUpperCase()}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="md:col-span-2 pt-4 border-t border-gray-800 mt-4">
+                    <button 
+                        type="submit" 
+                        disabled={status.loading}
+                        className="w-full bg-red-700 hover:bg-red-600 text-white font-black py-4 uppercase tracking-[0.4em] text-xs transition-all border-b-4 border-red-900 active:border-b-0 active:translate-y-1 disabled:opacity-50"
+                    >
+                        {status.loading ? "SINCRONIZANDO BASE DE DATOS..." : "REGISTRAR EN EL SISTEMA"}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 };
