@@ -4,11 +4,11 @@ import { FindUserById, addRegistrationRequest } from "../../data-handler";
 
 export async function POST(req) {
     try {
-        // Verificar token de admin
+        // 1. Verificar token de autorización (Protocolo O5)
         const authHeader = req.headers.get('authorization');
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return NextResponse.json(
-                { success: false, message: "Acceso denegado. Solo el administrador puede registrar usuarios." },
+                { success: false, message: "ACCESO DENEGADO. SOLO EL ADMINISTRADOR PUEDE REGISTRAR PERSONAL." },
                 { status: 403 }
             );
         }
@@ -16,7 +16,7 @@ export async function POST(req) {
         const token = authHeader.substring(7);
         if (!process.env.JWT_SECRET) {
             return NextResponse.json(
-                { success: false, message: "Configuración de seguridad incompleta." },
+                { success: false, message: "ERROR DE CONFIGURACIÓN DE SEGURIDAD." },
                 { status: 500 }
             );
         }
@@ -25,94 +25,72 @@ export async function POST(req) {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             if (decoded.userId !== process.env.ADMIN_USERNAME) {
                 return NextResponse.json(
-                    { success: false, message: "Token inválido o no autorizado." },
+                    { success: false, message: "TOKEN NO AUTORIZADO." },
                     { status: 403 }
                 );
             }
         } catch (err) {
             return NextResponse.json(
-                { success: false, message: "Token inválido." },
+                { success: false, message: "TOKEN INVÁLIDO O EXPIRADO." },
                 { status: 403 }
             );
         }
 
+        // 2. Obtener y validar datos del cuerpo de la solicitud
         const data = await req.json();
+        const { id, firstName, lastName, password, role, department } = data;
 
-        // Basic validation
-        const { id, firstName, lastName, password } = data;
-        if (!id || !firstName || !lastName || !password) {
+        // Validación de campos obligatorios
+        if (!id || !firstName || !lastName || !password || !role || !department) {
             return NextResponse.json(
-                { success: false, message: "Todos los campos de identificación son obligatorios para el protocolo de contención." },
+                { success: false, message: "TODOS LOS CAMPOS (ID, NOMBRE, NIVEL Y DPTO) SON REQUERIDOS." },
                 { status: 400 }
             );
         }
 
+        // Validación de formato de ID
         if (!/^\d+$/.test(id.toString())) {
             return NextResponse.json(
-                { success: false, message: "ID debe contener solo números para el sistema de clasificación." },
+                { success: false, message: "EL ID DEBE SER ÚNICAMENTE NUMÉRICO." },
                 { status: 400 }
             );
         }
 
-        const nameRegex = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]+$/;
-
-        if (!nameRegex.test(firstName.trim()) || !nameRegex.test(lastName.trim())) {
-            return NextResponse.json(
-                { success: false, message: "Nombre y apellido deben contener solo caracteres alfanuméricos autorizados." },
-                { status: 400 }
-            );
-        }
-
-        // Verificar si el usuario ya existe (activo o pendiente)
+        // 3. Verificar si la identidad ya existe en la base de datos
         const existingUser = await FindUserById(id);
-
         if (existingUser) {
             return NextResponse.json(
-                { success: false, message: "Identidad ya registrada en la base de datos de la Fundación." },
+                { success: false, message: "IDENTIDAD YA REGISTRADA EN LOS ARCHIVOS DE LA FUNDACIÓN." },
                 { status: 409 }
             );
         }
 
-        // Crear solicitud de registro pendiente
+        // 4. Crear solicitud de registro con los nuevos campos
         const success = await addRegistrationRequest({
             id: String(id).trim(),
             firstName: firstName.trim(),
             lastName: lastName.trim(),
-            password,
+            password: password, // En producción debería estar hasheado
+            role: role,         // Nivel de acceso (1-5)
+            department: department // Departamento dinámico
         });
 
         if (!success) {
             return NextResponse.json(
-                { success: false, message: "Ya existe una solicitud de acceso pendiente para esta identidad." },
+                { success: false, message: "YA EXISTE UNA SOLICITUD PENDIENTE PARA ESTA IDENTIDAD." },
                 { status: 409 }
             );
         }
 
         return NextResponse.json(
-            { success: true, message: "Solicitud de acceso enviada. Será evaluada por el Consejo de Seguridad." },
+            { success: true, message: "REGISTRO AUTORIZADO. SOLICITUD ENVIADA AL CONSEJO DE SEGURIDAD." },
             { status: 201 }
         );
+
     } catch (error) {
-        console.error("POST /api/auth/register error:", error);
-        
-        // Manejar errores específicos de Firebase
-        if (error.code === 'permission-denied') {
-            return NextResponse.json(
-                { success: false, message: "Error de permisos en la base de datos." },
-                { status: 500 }
-            );
-        }
-        
-        if (error.code === 'unavailable') {
-            return NextResponse.json(
-                { success: false, message: "La base de datos no está disponible en este momento." },
-                { status: 503 }
-            );
-        }
-        
-        // Error genérico
+        console.error("CRITICAL ERROR EN POST /api/auth/register:", error);
         return NextResponse.json(
-            { success: false, message: "Error interno del sistema de contención. Protocolo de seguridad activado." },
+            { success: false, message: "ERROR INTERNO DEL SISTEMA. PROTOCOLO DE CONTENCIÓN ACTIVADO." },
             { status: 500 }
         );
     }
