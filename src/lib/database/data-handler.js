@@ -4,7 +4,7 @@
  * ========================================
  */
 
-import { getFirebaseDB } from './firebase';
+import { getFirebaseDB } from '@/lib/database/firebase';
 
 const DB_COLLECTION = 'foundation_database'; 
 const DB_DOC = 'central_records'; 
